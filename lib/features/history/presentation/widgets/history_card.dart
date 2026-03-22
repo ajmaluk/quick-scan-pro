@@ -64,9 +64,9 @@ class HistoryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary)),
+                        Expanded(child: Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary), overflow: TextOverflow.ellipsis)),
+                        const SizedBox(width: 8),
                         Text(dateStr, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
                       ],
                     ),

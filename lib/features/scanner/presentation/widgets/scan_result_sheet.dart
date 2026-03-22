@@ -103,8 +103,8 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary)),
-                        Text(widget.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
+                        Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary), overflow: TextOverflow.ellipsis, maxLines: 1),
+                        Text(widget.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed), overflow: TextOverflow.ellipsis, maxLines: 1),
                       ],
                     ),
                   ),
@@ -202,7 +202,12 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
                 children: [
                   Icon(_getMainActionIcon(type), color: Colors.white, size: 20),
                   const SizedBox(width: 10),
-                  Text(_getMainActionLabel(type), style: AppTextStyles.labelLarge.copyWith(color: Colors.white)),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(_getMainActionLabel(type), style: AppTextStyles.labelLarge.copyWith(color: Colors.white)),
+                    ),
+                  ),
                 ],
               ),
             ),

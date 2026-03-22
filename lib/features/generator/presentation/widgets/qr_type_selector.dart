@@ -25,6 +25,7 @@ class QRTypeSelector extends StatelessWidget {
       ScanType.contact,
       ScanType.sms,
       ScanType.geo,
+      ScanType.upi,
     ];
 
     return SizedBox(
@@ -55,6 +56,7 @@ class QRTypeSelector extends StatelessWidget {
       case ScanType.contact: icon = Icons.person_rounded; break;
       case ScanType.sms: icon = Icons.sms_rounded; break;
       case ScanType.geo: icon = Icons.location_on_rounded; break;
+      case ScanType.upi: icon = Icons.payments_rounded; break;
       default: icon = Icons.text_snippet_rounded;
     }
 

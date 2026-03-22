@@ -27,6 +27,10 @@ class QRGeneratorScreen extends ConsumerStatefulWidget {
 
 class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
   final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _upiPaController = TextEditingController();
+  final TextEditingController _upiPnController = TextEditingController();
+  final TextEditingController _upiAmController = TextEditingController();
+  final TextEditingController _upiTnController = TextEditingController();
   final GlobalKey _qrKey = GlobalKey();
 
   Future<Uint8List?> _capturePng() async {
@@ -140,7 +144,22 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
   @override
   void dispose() {
     _contentController.dispose();
+    _upiPaController.dispose();
+    _upiPnController.dispose();
+    _upiAmController.dispose();
+    _upiTnController.dispose();
     super.dispose();
+  }
+
+  void _updateUpiContent() {
+    final payload = ActionUrlBuilder.buildUpiPayload(
+      pa: _upiPaController.text,
+      pn: _upiPnController.text,
+      am: _upiAmController.text,
+      tn: _upiTnController.text,
+    );
+    _contentController.text = payload;
+    ref.read(generatorProvider.notifier).setContent(payload);
   }
 
   @override
@@ -194,52 +213,55 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                       children: [
                         Text('Content', style: AppTextStyles.labelMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                         const SizedBox(height: 12),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainerHigh, // Slightly darker for depth
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: Theme.of(context).dividerColor),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: _contentController,
-                            maxLines: 4, // More space for content
-                            onChanged: (value) => generatorNotifier.setContent(value),
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              height: 1.5, // Better line height for readability
+                        if (generatorState.type == ScanType.upi)
+                          _buildUpiInputForm()
+                        else
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(color: Theme.of(context).dividerColor),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
-                            cursorColor: AppColors.primary,
-                            decoration: InputDecoration(
-                              hintText: _getHintText(generatorState.type),
-                              hintStyle: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textDimmed.withValues(alpha: 0.5),
+                            child: TextField(
+                              controller: _contentController,
+                              maxLines: 4,
+                              onChanged: (value) => generatorNotifier.setContent(value),
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                height: 1.5,
                               ),
-                              filled: false, // CRITICAL: Prevent theme background from showing
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                              suffixIcon: _contentController.text.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: IconButton(
-                                        icon: const Icon(Icons.clear_rounded, color: AppColors.textDimmed, size: 20),
-                                        onPressed: () {
-                                          _contentController.clear();
-                                          generatorNotifier.setContent('');
-                                          setState(() {});
-                                        },
-                                      ),
-                                    )
-                                  : null,
+                              cursorColor: AppColors.primary,
+                              decoration: InputDecoration(
+                                hintText: _getHintText(generatorState.type),
+                                hintStyle: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.textDimmed.withValues(alpha: 0.5),
+                                ),
+                                filled: false,
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                suffixIcon: _contentController.text.isNotEmpty
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(right: 8),
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear_rounded, color: AppColors.textDimmed, size: 20),
+                                          onPressed: () {
+                                            _contentController.clear();
+                                            generatorNotifier.setContent('');
+                                            setState(() {});
+                                          },
+                                        ),
+                                      )
+                                    : null,
+                              ),
                             ),
                           ),
-                        ),
                         const SizedBox(height: 32),
                         Row(
                           children: [
@@ -454,6 +476,80 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildUpiInputForm() {
+    return Column(
+      children: [
+        _buildUpiField(
+          controller: _upiPaController,
+          label: 'UPI ID / VPA',
+          hint: 'e.g. user@abc',
+          icon: Icons.alternate_email_rounded,
+        ),
+        const SizedBox(height: 12),
+        _buildUpiField(
+          controller: _upiPnController,
+          label: 'Payee Name',
+          hint: 'e.g. John Doe',
+          icon: Icons.person_outline_rounded,
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildUpiField(
+                controller: _upiAmController,
+                label: 'Amount (Optional)',
+                hint: '0.00',
+                icon: Icons.currency_rupee_rounded,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildUpiField(
+                controller: _upiTnController,
+                label: 'Note (Optional)',
+                hint: 'For dinner',
+                icon: Icons.note_add_outlined,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUpiField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Theme.of(context).dividerColor),
+      ),
+      child: TextField(
+        controller: controller,
+        onChanged: (_) => _updateUpiContent(),
+        keyboardType: keyboardType,
+        style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.onSurface),
+        cursorColor: AppColors.primary,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed),
+          hintText: hint,
+          prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+      ),
     );
   }
 
