@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:quickscan_pro/core/theme/app_theme.dart';
 import 'package:quickscan_pro/features/generator/presentation/screens/qr_generator_screen.dart';
 import 'package:quickscan_pro/features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -12,6 +13,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    GoogleFonts.config.allowRuntimeFetching = false;
   });
 
   Future<void> pumpForGolden(WidgetTester tester, Widget child) async {
