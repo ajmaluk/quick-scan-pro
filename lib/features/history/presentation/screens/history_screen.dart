@@ -115,12 +115,15 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8).copyWith(bottom: bottomSafePadding),
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
-                      if (index == 2 && _isNativeLoaded) {
+                      // Only show Native Ad if we have enough items (e.g. at least 3)
+                      if (index == 2 && _isNativeLoaded && filteredHistory.length >= 3) {
                         return _buildNativeAdCard();
                       }
                       
-                      final scanIndex = (index > 2 && _isNativeLoaded) ? index - 1 : index;
-                      if (scanIndex >= filteredHistory.length) return const SizedBox.shrink();
+                      final scanOffset = (_isNativeLoaded && filteredHistory.length >= 3 && index > 2) ? 1 : 0;
+                      final scanIndex = index - scanOffset;
+                      
+                      if (scanIndex < 0 || scanIndex >= filteredHistory.length) return const SizedBox.shrink();
                       
                       final scan = filteredHistory[scanIndex];
                       return HistoryCard(
@@ -130,7 +133,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                         onDelete: () => historyNotifier.deleteScanById(scan.id),
                       ).animate().fade(delay: (index * 30).ms, duration: 300.ms).slideY(begin: 0.05, end: 0);
                     },
-                    itemCount: _isNativeLoaded ? filteredHistory.length + 1 : filteredHistory.length,
+                    itemCount: (_isNativeLoaded && filteredHistory.length >= 3) ? filteredHistory.length + 1 : filteredHistory.length,
                   ),
               ],
             ),

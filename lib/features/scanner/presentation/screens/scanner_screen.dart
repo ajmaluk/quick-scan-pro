@@ -52,16 +52,31 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
   Future<void> _checkPermission() async {
     try {
-      final status = await (widget.permissionRequestOverride?.call() ?? Permission.camera.request());
+      final status = await (widget.permissionRequestOverride?.call() ?? Permission.camera.request())
+          .timeout(const Duration(seconds: 5), onTimeout: () => PermissionStatus.denied);
+          
       if (mounted) {
         setState(() {
           _hasPermission = status.isGranted;
           _isPermissionPermanentlyDenied = status.isPermanentlyDenied;
           _isCheckingPermission = false;
         });
+        
+        if (_hasPermission) {
+          // Additional safety: ensure controller is ready
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (mounted) {
+              ref.read(scannerProvider.notifier).resume();
+            }
+          });
+        }
       }
     } catch (e) {
-      if (mounted) setState(() => _isCheckingPermission = false);
+      if (mounted) {
+        setState(() {
+          _isCheckingPermission = false;
+        });
+      }
     }
   }
 

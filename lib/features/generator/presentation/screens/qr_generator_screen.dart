@@ -485,7 +485,7 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
       children: [
         _buildUpiField(
           controller: _upiPaController,
-          label: 'UPI ID / VPA',
+          label: 'UPI ID / VPA (Required)',
           hint: 'e.g. user@abc',
           icon: Icons.alternate_email_rounded,
         ),
@@ -576,6 +576,7 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
       case ScanType.contact: return ['BEGIN:VCARD\nFN:John Doe\nTEL:+14155552671\nEND:VCARD'];
       case ScanType.sms: return ['SMSTO:+14155552671:Hello from QuickScan'];
       case ScanType.geo: return ['geo:40.7128,-74.0060', 'geo:51.5072,-0.1276'];
+      case ScanType.upi: return ['ajmal@upi', 'merchant@okaxis', 'shop@ybl'];
       case ScanType.text: return ['Welcome to QuickScan', 'Scan smart. Move fast.'];
       default: return ['Enter your text here...'];
     }

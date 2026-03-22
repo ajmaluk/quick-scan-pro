@@ -14,57 +14,61 @@ enum ScanType {
 
 class ContentAnalyzer {
   static ScanType analyze(String content) {
-    if (content.startsWith('http://') ||
-        content.startsWith('https://') ||
-        content.startsWith('www.') ||
-        content.contains('http://') ||
-        content.contains('https://')) {
+    if (content.isEmpty) return ScanType.text;
+    
+    final trimmed = content.trim();
+
+    if (trimmed.startsWith('http://') ||
+        trimmed.startsWith('https://') ||
+        trimmed.startsWith('www.') ||
+        trimmed.contains('http://') ||
+        trimmed.contains('https://')) {
       return ScanType.url;
     }
 
-    if (content.toLowerCase().startsWith('mailto:') ||
+    if (trimmed.toLowerCase().startsWith('mailto:') ||
         RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-            .hasMatch(content)) {
+            .hasMatch(trimmed)) {
       return ScanType.email;
     }
 
-    if (content.startsWith('WIFI:') || content.startsWith('wifi:')) {
+    if (trimmed.startsWith('WIFI:') || trimmed.startsWith('wifi:')) {
       return ScanType.wifi;
     }
 
-    if (content.startsWith('SMSTO:') ||
-        content.startsWith('smsto:') ||
-        content.startsWith('SMS:') ||
-        content.startsWith('sms:')) {
+    if (trimmed.startsWith('SMSTO:') ||
+        trimmed.startsWith('smsto:') ||
+        trimmed.startsWith('SMS:') ||
+        trimmed.startsWith('sms:')) {
       return ScanType.sms;
     }
 
-    if (content.startsWith('geo:') || content.contains('google.com/maps')) {
+    if (trimmed.startsWith('geo:') || trimmed.contains('google.com/maps')) {
       return ScanType.geo;
     }
     
-    if (content.startsWith('upi://pay') || content.contains('upi://')) {
+    if (trimmed.startsWith('upi://pay') || trimmed.contains('upi://')) {
       return ScanType.upi;
     }
 
-    if (content.startsWith('BEGIN:VCARD') || content.contains('VCARD')) {
+    if (trimmed.startsWith('BEGIN:VCARD') || trimmed.contains('VCARD')) {
       return ScanType.contact;
     }
 
-    if (content.startsWith('BEGIN:VEVENT') || content.contains('VEVENT')) {
+    if (trimmed.startsWith('BEGIN:VEVENT') || trimmed.contains('VEVENT')) {
       return ScanType.event;
     }
 
-    if (content.startsWith('BEGIN:VCALENDAR') || content.contains('VCALENDAR')) {
+    if (trimmed.startsWith('BEGIN:VCALENDAR') || trimmed.contains('VCALENDAR')) {
       return ScanType.event;
     }
 
-    if (RegExp(r'^[0-9]{8,13}$').hasMatch(content)) {
+    if (RegExp(r'^[0-9]{8,13}$').hasMatch(trimmed)) {
       return ScanType.product;
     }
 
-    if (content.startsWith('tel:') ||
-        RegExp(r'^\+?[0-9]{7,15}$').hasMatch(content)) {
+    if (trimmed.startsWith('tel:') ||
+        RegExp(r'^\+?[0-9]{7,15}$').hasMatch(trimmed)) {
       return ScanType.phone;
     }
 

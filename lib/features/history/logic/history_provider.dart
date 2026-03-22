@@ -65,16 +65,6 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
     }
   }
 
-  /// Deletes a scan from the history at the given index.
-  /// The index corresponds to the reversed list shown in the UI.
-  Future<void> deleteScan(int index) async {
-    try {
-      final actualIndex = HiveService.scansBox.length - 1 - index;
-      await HiveService.deleteScan(actualIndex);
-    } catch (e) {
-      debugPrint('Error in HistoryNotifier.deleteScan: $e');
-    }
-  }
 
   /// Deletes a scan by id to avoid index mismatches after filtering.
   Future<void> deleteScanById(String id) async {
@@ -88,19 +78,6 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
     }
   }
 
-  /// Toggles the favorite status of a scan entry.
-  Future<void> toggleFavorite(int index) async {
-    try {
-      final actualIndex = HiveService.scansBox.length - 1 - index;
-      final scan = HiveService.scansBox.getAt(actualIndex);
-      if (scan != null) {
-        scan.isFavorite = !scan.isFavorite;
-        await HiveService.updateScan(actualIndex, scan);
-      }
-    } catch (e) {
-      debugPrint('Error in HistoryNotifier.toggleFavorite: $e');
-    }
-  }
 
   /// Toggles favorite by id to avoid mutating the wrong list item.
   Future<void> toggleFavoriteById(String id) async {

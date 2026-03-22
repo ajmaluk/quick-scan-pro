@@ -9,6 +9,7 @@ import 'package:quickscan_pro/core/widgets/press_scale.dart';
 import 'package:quickscan_pro/features/onboarding/logic/onboarding_provider.dart';
 import 'package:quickscan_pro/features/onboarding/presentation/widgets/onboarding_page.dart';
 import 'package:quickscan_pro/features/home/presentation/screens/home_screen.dart';
+import 'package:quickscan_pro/core/services/notification_service.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -64,6 +65,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _complete() async {
     await ref.read(onboardingProvider.notifier).completeOnboarding();
+    
+    // Schedule a daily reminder to keep the user engaged
+    await NotificationService.scheduleDailyNotification();
+    
     if (!mounted) return;
     pushReplacementSharedAxis(
       context,
