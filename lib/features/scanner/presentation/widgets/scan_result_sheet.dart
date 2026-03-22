@@ -312,7 +312,12 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
       case ScanType.upi:
         final uri = ActionUrlBuilder.buildPrimaryUri(type, content);
         if (uri != null && await canLaunchUrl(uri)) {
-          await launchUrl(uri);
+          await launchUrl(
+            uri,
+            mode: (type == ScanType.url) 
+                ? LaunchMode.platformDefault 
+                : LaunchMode.externalApplication,
+          );
         } else {
           await launchUrl(ActionUrlBuilder.buildSearchUri(content));
         }

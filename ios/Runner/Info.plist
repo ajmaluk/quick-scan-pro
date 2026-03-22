@@ -76,5 +76,15 @@
 		<false/>
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-1506704627672992~1487936204</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>https</string>
+			<string>http</string>
+			<string>upi</string>
+			<string>tel</string>
+			<string>mailto</string>
+			<string>geo</string>
+			<string>sms</string>
+		</array>
 	</dict>
 </plist>
