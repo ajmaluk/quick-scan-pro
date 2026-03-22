@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/dimensions.dart';
+import 'package:quickscan_pro/core/theme/text_styles.dart';
 import 'package:quickscan_pro/core/constants/strings.dart';
 
 class AboutScreen extends StatelessWidget {
