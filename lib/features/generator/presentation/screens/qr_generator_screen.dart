@@ -52,7 +52,22 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
   }
 
   Future<void> _saveToGallery() async {
-    if (_contentController.text.isEmpty) return;
+    final type = ref.read(generatorProvider).type;
+    final content = ref.read(generatorProvider).content;
+    
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter content to generate QR')),
+      );
+      return;
+    }
+
+    if (type == ScanType.upi && _upiPaController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('UPI ID / VPA is required')),
+      );
+      return;
+    }
 
     final Uint8List? imageBytes = await _capturePng();
     if (imageBytes == null) {
@@ -121,7 +136,22 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
   }
 
   Future<void> _shareQR() async {
-    if (_contentController.text.isEmpty) return;
+    final type = ref.read(generatorProvider).type;
+    final content = ref.read(generatorProvider).content;
+    
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter content to generate QR')),
+      );
+      return;
+    }
+
+    if (type == ScanType.upi && _upiPaController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('UPI ID / VPA is required')),
+      );
+      return;
+    }
 
     final Uint8List? imageBytes = await _capturePng();
     if (imageBytes == null) return;

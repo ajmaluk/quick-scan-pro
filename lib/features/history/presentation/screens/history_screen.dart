@@ -53,8 +53,28 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     _nativeAd = NativeAd(
       adUnitId: AdService.nativeAdUnitId,
-      factoryId: 'listTile', // Standard factory ID for list-integrated ads
       request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(
+        templateType: TemplateType.small,
+        mainBackgroundColor: AppColors.surface,
+        cornerRadius: 16.0,
+        callToActionTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.white,
+          backgroundColor: AppColors.primary,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        primaryTextStyle: NativeTemplateTextStyle(
+          textColor: AppColors.textPrimary,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        secondaryTextStyle: NativeTemplateTextStyle(
+          textColor: AppColors.textDimmed,
+          style: NativeTemplateFontStyle.normal,
+          size: 14.0,
+        ),
+      ),
       listener: NativeAdListener(
         onAdLoaded: (_) => setState(() => _isNativeLoaded = true),
         onAdFailedToLoad: (ad, error) {
@@ -219,44 +239,17 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   Widget _buildNativeAdCard() {
-    if (!_isNativeLoaded) return const SizedBox.shrink();
+    if (!_isNativeLoaded || _nativeAd == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      child: Container(
-        height: 100,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Theme.of(context).dividerColor),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 320,
+          minHeight: 100,
+          maxWidth: 400,
+          maxHeight: 110,
         ),
-        child: Stack(
-          children: [
-            AdWidget(ad: _nativeAd!),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    topRight: Radius.circular(16),
-                  ),
-                ),
-                child: Text(
-                  'AD',
-                  style: AppTextStyles.labelSmall.copyWith(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: AdWidget(ad: _nativeAd!),
       ),
     );
   }

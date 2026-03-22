@@ -8,7 +8,7 @@
 PRODUCT_NAME = quickscan_pro
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.quickscan.pro.quickscanPro
+PRODUCT_BUNDLE_IDENTIFIER = com.ajmal.quickscanpro
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.quickscan.pro. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.ajmal.quickscanpro. All rights reserved.

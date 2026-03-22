@@ -1,4 +1,4 @@
-package com.quickscan.pro.quickscan_pro
+package com.ajmal.quickscanpro
 
 import io.flutter.embedding.android.FlutterActivity
 

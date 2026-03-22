@@ -73,65 +73,67 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
       borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.9),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-            border: Border.all(color: Theme.of(context).dividerColor),
-          ),
-          padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottomSafePadding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
+          child: SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.9),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                border: Border.all(color: Theme.of(context).dividerColor),
               ),
-              const SizedBox(height: 24),
-              Row(
+              padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottomSafePadding),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTypeIcon(type),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary), overflow: TextOverflow.ellipsis, maxLines: 1),
-                        Text(widget.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed), overflow: TextOverflow.ellipsis, maxLines: 1),
-                      ],
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   ),
-                  _buildFavoriteButton(isFavorite),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      _buildTypeIcon(type),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary), overflow: TextOverflow.ellipsis, maxLines: 1),
+                            Text(widget.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed), overflow: TextOverflow.ellipsis, maxLines: 1),
+                          ],
+                        ),
+                      ),
+                      _buildFavoriteButton(isFavorite),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Theme.of(context).dividerColor),
+                    ),
+                    child: type == ScanType.contact && widget.content.startsWith('BEGIN:VCARD')
+                        ? _buildContactDetails(ActionUrlBuilder.parseVCard(widget.content))
+                        : SelectableText(
+                            widget.content,
+                            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          ),
+                  ),
+                  const SizedBox(height: 32),
+                  _buildActionRow(type),
                 ],
               ),
-              const SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                ),
-                child: type == ScanType.contact && widget.content.startsWith('BEGIN:VCARD')
-                    ? _buildContactDetails(ActionUrlBuilder.parseVCard(widget.content))
-                    : SelectableText(
-                        widget.content,
-                        style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                      ),
-              ),
-              const SizedBox(height: 32),
-              _buildActionRow(type),
-            ],
+            ),
           ),
-        ),
       ),
     );
   }

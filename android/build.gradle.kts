@@ -33,6 +33,9 @@ subprojects {
         }
         
         project.tasks.withType<JavaCompile>().configureEach {
+            options.compilerArgs.addAll(listOf("-Xlint:none", "-nowarn"))
+            options.isDeprecation = false
+            options.isWarnings = false
             sourceCompatibility = "17"
             targetCompatibility = "17"
         }

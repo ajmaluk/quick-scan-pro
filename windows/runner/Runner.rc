@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.quickscan.pro" "\0"
+            VALUE "CompanyName", "com.ajmal.quickscanpro" "\0"
             VALUE "FileDescription", "quickscan_pro" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "quickscan_pro" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.quickscan.pro. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.ajmal.quickscanpro. All rights reserved." "\0"
             VALUE "OriginalFilename", "quickscan_pro.exe" "\0"
             VALUE "ProductName", "quickscan_pro" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

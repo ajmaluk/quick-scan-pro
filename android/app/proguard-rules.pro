@@ -15,5 +15,6 @@
 # Generic Proguard rules
 -dontwarn android.test.**
 -dontwarn android.support.**
+-dontwarn com.google.android.play.core.**
 -dontwarn com.google.android.gms.**
 -dontwarn androidx.**
