@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:quickscan_pro/app.dart';
 import 'package:quickscan_pro/data/local/hive_service.dart';
 import 'package:quickscan_pro/core/services/notification_service.dart';
+import 'package:quickscan_pro/core/services/ad_service.dart';
 
 /// The main entry point of the QuickScan application.
 void main() async {
@@ -19,6 +20,14 @@ void main() async {
   // Initialize local notification service
   await NotificationService.init();
 
+  // Initialize AdMob
+  final adService = AdService();
+  await adService.init();
+  adService.loadAppOpenAd();
+
+  // Handle App Open Ad on Resume
+  WidgetsBinding.instance.addObserver(_AppOpenAdObserver(adService));
+
   runApp(
     const ProviderScope(
       child: QuickScanApp(),
@@ -27,4 +36,16 @@ void main() async {
   
   // Initialization complete, dismiss the splash screen
   FlutterNativeSplash.remove();
+}
+
+class _AppOpenAdObserver extends WidgetsBindingObserver {
+  final AdService _adService;
+  _AppOpenAdObserver(this._adService);
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _adService.showAppOpenAdIfAvailable();
+    }
+  }
 }

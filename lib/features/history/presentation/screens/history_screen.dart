@@ -12,6 +12,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quickscan_pro/core/services/ad_service.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -24,10 +26,49 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   _HistoryFilter _activeFilter = _HistoryFilter.all;
+  BannerAd? _bannerAd;
+  bool _isBannerLoaded = false;
+  NativeAd? _nativeAd;
+  bool _isNativeLoaded = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadAds();
+  }
+
+  void _loadAds() {
+    _bannerAd = BannerAd(
+      adUnitId: AdService.bannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) => setState(() => _isBannerLoaded = true),
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          debugPrint('BannerAd failed to load: $error');
+        },
+      ),
+    )..load();
+
+    _nativeAd = NativeAd(
+      adUnitId: AdService.nativeAdUnitId,
+      factoryId: 'listTile', // Standard factory ID for list-integrated ads
+      request: const AdRequest(),
+      listener: NativeAdListener(
+        onAdLoaded: (_) => setState(() => _isNativeLoaded = true),
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          debugPrint('NativeAd failed to load: $error');
+        },
+      ),
+    )..load();
+  }
   @override
   void dispose() {
     _searchController.dispose();
+    _bannerAd?.dispose();
+    _nativeAd?.dispose();
     super.dispose();
   }
 
@@ -72,10 +113,16 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8).copyWith(bottom: bottomSafePadding),
-                    itemCount: filteredHistory.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
-                      final scan = filteredHistory[index];
+                      if (index == 2 && _isNativeLoaded) {
+                        return _buildNativeAdCard();
+                      }
+                      
+                      final scanIndex = (index > 2 && _isNativeLoaded) ? index - 1 : index;
+                      if (scanIndex >= filteredHistory.length) return const SizedBox.shrink();
+                      
+                      final scan = filteredHistory[scanIndex];
                       return HistoryCard(
                         scan: scan,
                         onTap: () => _showScanResult(context, scan),
@@ -83,10 +130,18 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                         onDelete: () => historyNotifier.deleteScanById(scan.id),
                       ).animate().fade(delay: (index * 30).ms, duration: 300.ms).slideY(begin: 0.05, end: 0);
                     },
+                    itemCount: _isNativeLoaded ? filteredHistory.length + 1 : filteredHistory.length,
                   ),
               ],
             ),
           ),
+          if (_isBannerLoaded)
+            Container(
+              alignment: Alignment.center,
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            ),
         ],
       ),
     );
@@ -156,6 +211,23 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildNativeAdCard() {
+    if (!_isNativeLoaded) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: Container(
+        height: 100,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        child: AdWidget(ad: _nativeAd!),
       ),
     );
   }
