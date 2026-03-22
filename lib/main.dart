@@ -5,6 +5,8 @@ import 'package:quickscan_pro/app.dart';
 import 'package:quickscan_pro/data/local/hive_service.dart';
 import 'package:quickscan_pro/core/services/notification_service.dart';
 import 'package:quickscan_pro/core/services/ad_service.dart';
+import 'package:quickscan_pro/core/constants/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The main entry point of the QuickScan application.
 void main() async {
@@ -43,9 +45,11 @@ class _AppOpenAdObserver extends WidgetsBindingObserver {
   _AppOpenAdObserver(this._adService);
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      _adService.showAppOpenAdIfAvailable();
+      final prefs = await SharedPreferences.getInstance();
+      final isFirstLaunch = prefs.getBool(AppConstants.isFirstLaunchKey) ?? true;
+      _adService.showAppOpenAdIfAvailable(suppress: isFirstLaunch);
     }
   }
 }

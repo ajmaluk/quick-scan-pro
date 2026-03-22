@@ -227,7 +227,33 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Theme.of(context).dividerColor),
         ),
-        child: AdWidget(ad: _nativeAd!),
+        child: Stack(
+          children: [
+            AdWidget(ad: _nativeAd!),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8),
+                    topRight: Radius.circular(16),
+                  ),
+                ),
+                child: Text(
+                  'AD',
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

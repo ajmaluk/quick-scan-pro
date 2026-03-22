@@ -47,8 +47,8 @@ class AdService {
 
   bool get _isAppOpenAdAvailable => _appOpenAd != null && _appOpenLoadTime != null && DateTime.now().difference(_appOpenLoadTime!).inHours < 4;
 
-  void showAppOpenAdIfAvailable() {
-    if (_isShowingAd) return;
+  void showAppOpenAdIfAvailable({bool suppress = false}) {
+    if (suppress || _isShowingAd) return;
     if (!_isAppOpenAdAvailable) {
       loadAppOpenAd();
       return;
