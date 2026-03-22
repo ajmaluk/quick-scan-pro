@@ -70,4 +70,25 @@ class ActionUrlBuilder {
     }
     return data;
   }
+
+  static String buildUpiPayload({
+    required String pa,
+    String? pn,
+    String? am,
+    String? tn,
+  }) {
+    final queryParams = <String, String>{
+      'pa': pa,
+    };
+    if (pn != null && pn.isNotEmpty) queryParams['pn'] = pn;
+    if (am != null && am.isNotEmpty) queryParams['am'] = am;
+    if (tn != null && tn.isNotEmpty) queryParams['tn'] = tn;
+
+    final uri = Uri(
+      scheme: 'upi',
+      host: 'pay',
+      queryParameters: queryParams,
+    );
+    return uri.toString();
+  }
 }

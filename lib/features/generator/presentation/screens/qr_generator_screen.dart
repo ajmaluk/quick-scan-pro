@@ -14,6 +14,7 @@ import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
 import 'package:quickscan_pro/core/widgets/press_scale.dart';
 import 'package:quickscan_pro/core/utils/content_analyzer.dart';
+import 'package:quickscan_pro/core/utils/action_url_builder.dart';
 import 'package:quickscan_pro/features/generator/logic/generator_provider.dart';
 import 'package:quickscan_pro/features/generator/presentation/widgets/qr_preview_card.dart';
 import 'package:quickscan_pro/features/generator/presentation/widgets/qr_type_selector.dart';

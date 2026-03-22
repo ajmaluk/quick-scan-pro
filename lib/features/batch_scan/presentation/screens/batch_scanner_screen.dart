@@ -133,12 +133,14 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
           children: [
             Icon(icon, color: AppColors.primary, size: 20),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(value, style: AppTextStyles.h3.copyWith(fontSize: 18)),
-                Text(label, style: AppTextStyles.labelSmall.copyWith(fontSize: 10)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(value, style: AppTextStyles.h3.copyWith(fontSize: 18), overflow: TextOverflow.ellipsis),
+                  Text(label, style: AppTextStyles.labelSmall.copyWith(fontSize: 10), overflow: TextOverflow.ellipsis),
+                ],
+              ),
             ),
           ],
         ),
@@ -243,7 +245,7 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(scan.content, style: AppTextStyles.labelMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text(scan.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
+                      Text(scan.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed), maxLines: 1, overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),

@@ -288,27 +288,32 @@ class AboutScreen extends StatelessWidget {
               size: 16,
               color: isDark ? AppColors.primary : AppColors.secondary),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.5),
-                    ),
-              ),
-              Text(
-                value,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-              ),
-            ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 10,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.5),
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),
