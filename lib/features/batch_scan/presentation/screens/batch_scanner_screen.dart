@@ -20,6 +20,7 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
   final MobileScannerController _controller = MobileScannerController();
   bool _hasPermission = false;
   bool _isCheckingPermission = true;
+  bool _isPermissionPermanentlyDenied = false;
 
   @override
   void initState() {
@@ -28,12 +29,31 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
   }
 
   Future<void> _checkPermission() async {
-    final status = await Permission.camera.request();
     if (mounted) {
       setState(() {
-        _hasPermission = status.isGranted;
-        _isCheckingPermission = false;
+        _isCheckingPermission = true;
       });
+    }
+
+    try {
+      final status = await Permission.camera
+          .request()
+          .timeout(const Duration(seconds: 5), onTimeout: () => PermissionStatus.denied);
+
+      if (mounted) {
+        setState(() {
+          _hasPermission = status.isGranted;
+          _isPermissionPermanentlyDenied = status.isPermanentlyDenied || status.isRestricted;
+          _isCheckingPermission = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _hasPermission = false;
+          _isCheckingPermission = false;
+        });
+      }
     }
   }
 
@@ -46,25 +66,37 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isCheckingPermission) {
-      return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
     if (!_hasPermission) {
       return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.black,
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.videocam_off_rounded, color: AppColors.textDimmed, size: 64),
-              const SizedBox(height: 24),
-              Text('Camera Access Required', style: AppTextStyles.h2),
-              const SizedBox(height: 32),
-              ElevatedButton(onPressed: _checkPermission, child: const Text('Grant Permission')),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.videocam_off_rounded, color: AppColors.textDimmed, size: 64),
+                const SizedBox(height: 24),
+                Text('Camera Access Required', style: AppTextStyles.h2, textAlign: TextAlign.center),
+                const SizedBox(height: 12),
+                Text(
+                  'We need camera permission to scan codes.',
+                  style: AppTextStyles.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: _isPermissionPermanentlyDenied ? openAppSettings : _checkPermission,
+                  child: Text(_isPermissionPermanentlyDenied ? 'Open Settings' : 'Grant Permission'),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -159,10 +191,35 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
             children: [
               MobileScanner(
                 controller: _controller,
+                fit: BoxFit.cover,
+                placeholderBuilder: (context, child) => Container(
+                  color: Colors.black,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(color: AppColors.primary),
+                ),
                 onDetect: (capture) {
                   if (state.isPaused) return;
                   if (capture.barcodes.isNotEmpty) _onBarcodeDetected(capture.barcodes.first);
                 },
+                errorBuilder: (context, error, child) => Container(
+                  color: Colors.black,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Camera failed to start',
+                        style: AppTextStyles.bodyLarge.copyWith(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton(onPressed: _checkPermission, child: const Text('Try Again')),
+                    ],
+                  ),
+                ),
               ),
               Container(
                 decoration: BoxDecoration(

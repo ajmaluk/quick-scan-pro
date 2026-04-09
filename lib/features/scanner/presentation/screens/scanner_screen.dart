@@ -51,14 +51,20 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   }
 
   Future<void> _checkPermission() async {
+    if (mounted) {
+      setState(() {
+        _isCheckingPermission = true;
+      });
+    }
+
     try {
       final status = await (widget.permissionRequestOverride?.call() ?? Permission.camera.request())
           .timeout(const Duration(seconds: 5), onTimeout: () => PermissionStatus.denied);
-          
+
       if (mounted) {
         setState(() {
           _hasPermission = status.isGranted;
-          _isPermissionPermanentlyDenied = status.isPermanentlyDenied;
+          _isPermissionPermanentlyDenied = status.isPermanentlyDenied || status.isRestricted;
           _isCheckingPermission = false;
         });
         
@@ -113,15 +119,15 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isCheckingPermission) {
-      return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
     if (!_hasPermission) {
       return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.black,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(32),
@@ -171,6 +177,12 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
             else
               MobileScanner(
                 controller: scannerNotifier.controller,
+                fit: BoxFit.cover,
+                placeholderBuilder: (context, child) => Container(
+                  color: Colors.black,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(color: AppColors.primary),
+                ),
                 onDetect: (capture) {
                   if (capture.barcodes.isNotEmpty) _onBarcodeDetected(capture.barcodes.first);
                 },

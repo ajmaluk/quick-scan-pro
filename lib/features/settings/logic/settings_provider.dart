@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:quickscan_pro/core/constants/app_constants.dart';
+import 'package:quickscan_pro/core/services/notification_service.dart';
 
 final settingsProvider =
     StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
@@ -69,14 +69,25 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> toggleNotifications(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+
     if (value) {
-      final status = await Permission.notification.request();
-      if (!status.isGranted) return;
+      final granted = await NotificationService.requestPermission();
+      if (!granted) {
+        await prefs.setBool('notifications_enabled', false);
+        state = state.copyWith(isNotificationsEnabled: false);
+        return;
+      }
+
+      await prefs.setBool('notifications_enabled', true);
+      state = state.copyWith(isNotificationsEnabled: true);
+      await NotificationService.scheduleDailyNotification();
+      return;
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('notifications_enabled', value);
-    state = state.copyWith(isNotificationsEnabled: value);
+    await prefs.setBool('notifications_enabled', false);
+    state = state.copyWith(isNotificationsEnabled: false);
+    await NotificationService.cancelAll();
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {

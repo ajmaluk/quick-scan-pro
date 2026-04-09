@@ -1,7 +1,7 @@
 class AppConstants {
   static const String appName = 'QuickScan';
   static const String packageName = 'com.ajmal.quickscanpro';
-  static const String version = '1.0.0+1';
+  static const String version = '1.0.2+3';
 
   // Storage Keys
   static const String hiveBoxName = 'scans_box';

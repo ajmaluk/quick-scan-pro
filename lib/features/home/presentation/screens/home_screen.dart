@@ -18,7 +18,14 @@ import 'package:quickscan_pro/features/scanner/presentation/widgets/scan_result_
 import 'package:quickscan_pro/features/home/logic/home_tab_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  final int initialTabIndex;
+
+  const HomeScreen({super.key, this.initialTabIndex = 0});
+
+  const HomeScreen.withInitialTab({
+    super.key,
+    required this.initialTabIndex,
+  });
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -27,6 +34,15 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
   final MobileScannerController _scannerController = MobileScannerController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final int targetIndex = widget.initialTabIndex.clamp(0, 3);
+      ref.read(homeTabProvider.notifier).state = targetIndex;
+    });
+  }
 
   void _openScanner() {
     pushSharedAxis(
