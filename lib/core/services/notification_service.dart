@@ -98,7 +98,7 @@ class NotificationService {
     "One tap to instant clarity. ⚡",
     "Turn any code into action, elegantly. 🚀",
     "Stay in flow. Scan, save, continue. 🎯",
-    "Fast scanning, premium experience. 🌟",
+    "Fast scanning, clean experience. ✨",
     "Clean results. Zero friction. 🤍",
     "A smarter way to capture every code. 🔍",
   ];
@@ -248,9 +248,9 @@ class NotificationService {
 
       const AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
-        'quickscan_engaging_channel',
-        'Engaging Notifications',
-        channelDescription: 'Random messages to keep users engaged',
+        'quickscan_tips_channel',
+        'Feature Tips',
+        channelDescription: 'Tips and reminders for scan features',
         importance: Importance.low,
         priority: Priority.low,
       );

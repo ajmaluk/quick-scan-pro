@@ -1,14 +1,14 @@
 class AppStrings {
   // General
   static const String appTitle = 'QuickScan';
-  static const String tagline = 'Lightning Fast QR Scanner';
+  static const String tagline = 'QR & Barcode Scanner';
   static const String getStarted = 'Get Started';
   static const String next = 'Next';
   static const String skip = 'Skip';
 
   // Onboarding
-  static const String onboarding1Title = 'Lightning Fast Scanning';
-  static const String onboarding1Desc = 'Scan any QR or barcode instantly';
+  static const String onboarding1Title = 'Efficient Scanning';
+  static const String onboarding1Desc = 'Scan QR codes and barcodes quickly';
   static const String onboarding2Title = 'Smart Actions';
   static const String onboarding2Desc =
       'Automatic actions for URLs, contacts, WiFi';

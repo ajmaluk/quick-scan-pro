@@ -1,14 +1,14 @@
-# MASTER PROMPT: QuickScan Pro - Production-Ready QR & Barcode Scanner
+# MASTER PROMPT: QuickScan - Production-Ready QR & Barcode Scanner
 
-You are an expert Flutter developer with 5+ years of experience building production mobile applications. Create a complete, Play Store-ready QR & Barcode Scanner app called **QuickScan Pro** using Flutter with modern architecture, premium UI/UX, and advanced features.
+You are an expert Flutter developer with 5+ years of experience building production mobile applications. Create a complete, Play Store-ready QR & Barcode Scanner app called **QuickScan** using Flutter with modern architecture, premium UI/UX, and advanced features.
 
 ---
 
 ## 📱 APPLICATION OVERVIEW
 
-**App Name:** QuickScan Pro
+**App Name:** QuickScan
 **Package Name:** com.quickscan.pro
-**Tagline:** "The Fastest QR Scanner"
+**Tagline:** "QR & Barcode Scanner"
 **Category:** Tools / Productivity
 **Target Platform:** Android (Play Store optimized) + iOS ready
 **Minimum SDK:** Android 7.0 (API 24), iOS 12.0
@@ -340,7 +340,7 @@ lib/
 ```dart
 Design:
 - Background: Gradient (#1E293B → #0F172A)
-- Center: "QuickScan Pro" logo with glow effect
+- Center: "QuickScan" logo with glow effect
 - Tagline below: "The Fastest QR Scanner"
 - Loading indicator at bottom
 - Version number (small, bottom corner)
@@ -404,7 +404,7 @@ Configuration:
 #### UI Layout (Full Screen)
 ```dart
 ┌─────────────────────────────────┐
-│  [←] QuickScan Pro      [⚙]    │ ← Top Bar (gradient overlay)
+│  [←] QuickScan      [⚙]    │ ← Top Bar (gradient overlay)
 │         [⚡Flash] [🔄Switch]     │
 ├─────────────────────────────────┤
 │                                 │
@@ -1131,7 +1131,7 @@ Barcode Formats (Checkboxes):
 
 ## 🎨 UI/UX DESIGN SYSTEM
 
-### Color Palette (QuickScan Pro Theme)
+### Color Palette (QuickScan Theme)
 ```dart
 // colors.dart
 
@@ -1430,7 +1430,7 @@ class AppAnimations {
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     
     <application
-        android:label="QuickScan Pro"
+        android:label="QuickScan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         
@@ -1477,7 +1477,7 @@ Rationale Dialog Design:
 │                                 │
 │  📷 (Icon)                      │
 │                                 │
-│  QuickScan Pro needs camera     │
+│  QuickScan needs camera     │
 │  access to scan QR codes and    │
 │  barcodes.                      │
 │                                 │
@@ -1822,7 +1822,7 @@ flutter_native_splash:
 
 Design:
 - Background: #0F172A (dark slate)
-- Logo: "QuickScan Pro" with gradient
+- Logo: "QuickScan" with gradient
 - Tagline below logo
 - Duration: < 2 seconds
 ```
@@ -1866,7 +1866,7 @@ android {
 
 #### Play Store Listing
 ```
-App Title: QuickScan Pro
+App Title: QuickScan
 (30 characters max)
 
 Short Description: 
@@ -1874,9 +1874,9 @@ The fastest QR & barcode scanner. Scan instantly, smart actions, unlimited histo
 (80 characters max)
 
 Full Description:
-QuickScan Pro is the fastest and most powerful QR code and barcode scanner on Android. Scan any code instantly and take smart actions automatically.
+QuickScan is a functional QR code and barcode scanner for Android. Scan codes and take actions automatically.
 
-🚀 LIGHTNING FAST SCANNING
+🚀 EFFICIENT SCANNING
 - Instant detection in under 0.5 seconds
 - Supports all major formats: QR, EAN, UPC, Code 128, and more
 - Continuous batch scanning mode
@@ -1915,7 +1915,7 @@ Perfect for:
 ✓ Inventory management
 ✓ Document tracking
 
-Download QuickScan Pro today and experience the fastest QR scanner on Android!
+Download QuickScan today for a functional QR scanning experience on Android!
 
 Keywords:
 qr scanner, barcode scanner, qr code reader, code scanner, qr generator, barcode reader, quick scan, fast scanner, qr reader
@@ -1948,7 +1948,7 @@ Show app logo + key feature highlights
 #### Info.plist Additions
 ```xml
 <key>NSCameraUsageDescription</key>
-<string>QuickScan Pro needs camera access to scan QR codes and barcodes</string>
+<string>QuickScan needs camera access to scan QR codes and barcodes</string>
 
 <key>NSPhotoLibraryUsageDescription</key>
 <string>Access photos to scan QR codes from images</string>
@@ -1961,7 +1961,7 @@ Show app logo + key feature highlights
 ```
 Deployment Target: iOS 12.0
 Bundle Identifier: com.quickscan.pro
-Display Name: QuickScan Pro
+Display Name: QuickScan
 ```
 
 ---
@@ -2059,7 +2059,7 @@ Display Name: QuickScan Pro
 - [ ] Changelog
 
 ### Play Store Listing ✅
-- [ ] App title (≤ 30 chars): "QuickScan Pro"
+- [ ] App title (≤ 30 chars): "QuickScan"
 - [ ] Short description (≤ 80 chars)
 - [ ] Full description (≤ 4000 chars)
 - [ ] Keywords optimized for ASO
@@ -2278,4 +2278,4 @@ This is a premium, production-ready application. No compromises. No shortcuts. F
 
 **When you can check ALL boxes above, the app is DONE.** ✅
 
-Good luck building QuickScan Pro! 🚀
+Good luck building QuickScan! 🚀

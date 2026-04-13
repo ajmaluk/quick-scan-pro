@@ -88,7 +88,7 @@ class AboutScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Text(
-          'We build fast, uncompromising software. Uthakkan is focused on creating digital products that solve complex problems with elegant architecture.',
+          'Uthakkan develops software focused on solving complex problems through efficient architecture.',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context)
                     .colorScheme
@@ -181,7 +181,7 @@ class AboutScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Ajmal is a full-stack developer and AI enthusiast who builds products at the intersection of complex engineering and clean design. Frustrated by bloated software, he founded Uthakkan to architect tools—like ToolPix and Byte AI—that are as powerful under the hood as they are elegant on the surface.',
+                'Ajmal is a full-stack developer and AI enthusiast. He founded Uthakkan to develop tools—like ToolPix and Byte AI—that focus on functional software and efficient engineering.',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context)
                           .colorScheme
@@ -334,6 +334,14 @@ class AboutScreen extends StatelessWidget {
                   .withValues(alpha: 0.5),
               fontSize: 12,
             ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'QuickScan',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 8),
           Text(

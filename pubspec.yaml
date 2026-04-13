@@ -1,6 +1,6 @@
 name: quickscan_pro
-description: The Fastest QR & Barcode Scanner
-version: "1.0.2+3"
+description: A QR and Barcode Scanner built with Flutter.
+version: "1.0.3+4"
 
 environment:
   sdk: '>=3.5.0 <4.0.0'

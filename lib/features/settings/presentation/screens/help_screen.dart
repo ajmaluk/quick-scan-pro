@@ -20,7 +20,7 @@ class HelpScreen extends StatelessWidget {
       scheme: 'mailto',
       path: 'contact.uthakkan@gmail.com',
       query: encodeQueryParameters(<String, String>{
-        'subject': 'QuickScan Pro Help & Support',
+        'subject': 'QuickScan Help & Support',
       }),
     );
 

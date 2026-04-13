@@ -1,44 +1,45 @@
 # QuickScan - Play Store Metadata
 
 ## App Title
-**QuickScan: Fast QR & Barcode Reader**
+**QuickScan: QR & Barcode Reader**
 
 ## Short Description
-The most professional & fastest QR & Barcode scanner with custom generator and batch mode.
+A QR and barcode scanner featuring a code generator and batch scanning mode.
 
 ## Full Description
-QuickScan is the ultimate tool for all your scanning and generation needs. Built for professionals who value speed, efficiency, and elegant design. QuickScan offers a seamless experience with uncompromising performance.
+QuickScan is a utility for scanning and generating QR codes and barcodes. It is designed for efficient processing of various code formats and includes features for both individual and high-volume tasks.
 
-### 🚀 Key Features:
-- **Instant Recognition**: Our optimized scanning engine detects codes in milliseconds, even in low light.
-- **Intelligent Content Analysis**: Automatically identifies and provides actions for URLs, WiFi networks, vCards, Emails, Phone numbers, SMS, and Geo-coordinates.
-- **Batch Scanning Power**: Scan multiple items at once—ideal for inventory management, retail, and high-volume productivity tasks.
-- **UPI Scan-to-Pay**: Instant recognition of UPI payment codes with one-tap payment via your favorite mobile apps.
-- **Custom QR Studio**: Create unique QR codes. Personalize with custom foreground/background colors and eye-shapes to match your brand.
-- **Professional CSV Export**: Export your entire scan history to CSV format for processing in Excel, Google Sheets, or custom backend systems.
-- **Smart History Management**: Keep a searchable record of all your scans. Star favorites for quick access and swipe to delete.
-- **Haptic Excellence**: Experience premium tactile confirmation with refined vibration feedback for every successful scan and action.
-- **Premium UI/UX**: A beautiful, modern interface with native light and dark mode support, designed for the best user experience.
-- **Privacy First**: We respect your privacy. All scanning and history data is stored locally on your device—nothing is uploaded to any server.
+### Features:
+- **Code Recognition**: Detects standard 1D and 2D barcode formats using a specialized scanning engine.
+- **Content Analysis**: Identifies and provides options for URLs, WiFi networks, vCards, Emails, Phone numbers, SMS, and Geo-coordinates.
+- **Batch Scanning**: Scan multiple items in succession for inventory management and other repetitive tasks.
+- **UPI Payment Support**: Recognizes UPI payment codes and assists in opening supported mobile payment applications.
+- **QR Code Generator**: Create custom QR codes with options to adjust colors and shapes.
+- **Data Export**: Export scan history to CSV format for use in spreadsheets and other data processing tools.
+- **History Management**: Maintain a local record of previous scans with search and favorite functionality.
+- **Haptic Feedback**: Provides vibration confirmation for scan actions.
+- **Interface Options**: Includes support for both light and dark display modes.
+- **Local Data Storage**: All scan data is stored locally on the device to maintain user privacy.
 
-### 📦 Supported Formats:
+### Supported Formats:
 - **1D Barcodes**: UPC-A, UPC-E, EAN-8, EAN-13, Code 39, Code 93, Code 128, Codabar, ITF
 - **2D Codes**: QR Code, Data Matrix, Aztec, PDF417
 
-Developed by **Uthakkan**, QuickScan is engineered to be fast, private, and powerful.
-
 ## Tags / Keywords
-QR code scanner, barcode scanner, barcode reader, QR code generator, batch barcode scan, inventory scanner, WiFi QR, vCard scanner, contact QR code, business tools, productivity app, offline scanner, private scanner, no account required, fast code reader
+> [!IMPORTANT]
+> These tags are for the **Console Tags section** ONLY. Do NOT include these in your Main Description field to avoid being flagged for "Keyword Stuffing".
+
+QR code scanner, barcode scanner, barcode reader, QR code generator, batch barcode scan, inventory scanner, WiFi QR, vCard scanner, contact QR code, business tools, productivity app, offline scanner, private scanner, efficient code reader
 
 ## Target Audience
-- Professionals seeking a robust and efficient scanning utility.
-- Small business owners needing batch scanning for inventory.
-- Users who demand a customizable and high-quality QR generator.
-- Privacy-conscious individuals who prefer local data storage.
+- Users requiring a scanning utility for daily or professional tasks.
+- Individuals needing batch scanning capabilities for inventory.
+- Users looking to generate custom QR codes for information sharing.
+- Privacy-conscious individuals preferring local data management.
 
 ## Category
 Productivity / Tools
 
 ## Version Details
-- Current Version: 1.0.0
-- Built with ❤️ by Ajmal U K at Uthakkan.
+- Current Version: 1.0.3+4
+- Developed by Ajmal U K at Uthakkan.

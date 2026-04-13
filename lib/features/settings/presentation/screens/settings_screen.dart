@@ -54,7 +54,7 @@ class SettingsScreen extends ConsumerWidget {
                   await prefs.setBool(AppConstants.isFirstLaunchKey, true);
                   if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Onboarding reset successfully')));
                 }),
-                _buildListTile(context, icon: Icons.share_rounded, title: 'Share with Friends', onTap: () => Share.share('Fastest QR Scanner: https://www.uthakkan.in')),
+                _buildListTile(context, icon: Icons.share_rounded, title: 'Share with Friends', onTap: () => Share.share('QuickScan - QR & Barcode Reader: https://www.uthakkan.in')),
                 const SizedBox(height: 40),
                 Center(
                   child: Column(
@@ -115,7 +115,7 @@ class SettingsScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Pro Experience', style: AppTextStyles.h3.copyWith(color: Colors.white)),
+                Text('App Experience', style: AppTextStyles.h3.copyWith(color: Colors.white)),
                 Text(
                   'Optimized for speed & precision',
                   style: AppTextStyles.labelSmall.copyWith(color: Colors.white.withValues(alpha: 0.8)),
@@ -144,6 +144,8 @@ class SettingsScreen extends ConsumerWidget {
           child: DropdownButton<ThemeMode>(
             value: themeMode,
             onChanged: (val) { HapticFeedback.selectionClick(); onChanged(val); },
+            // Theme selection dropdown
+            // Backdrop Blur for a refined look
             dropdownColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(16),
             items: [

@@ -1,16 +1,14 @@
-# QuickScan Pro 🚀
-
-**QuickScan Pro** is a high-performance, premium QR and barcode scanner built with Flutter. Designed for speed, reliability, and a stunning user experience, it offers smart actions for various scan types, localized storage, and a powerful QR code generator.
+**QuickScan** is a QR and barcode scanner built with Flutter.
 
 ![App Logo](assets/icons/app_logo.svg)
 
 ## ✨ Key Features
 
--   **⚡ Lightning Fast Scanning**: Instant detection of all standard 1D and 2D barcode formats.
--   **💎 Premium UI/UX**: Modern glassmorphic design with smooth animations and full Light/Dark mode support.
+-   **⚡ Efficient Scanning**: Detection of standard 1D and 2D barcode formats.
+-   **💎 Interface**: Modern design with responsive animations and support for Light and Dark modes.
 -   **🏦 Smart Payment Integration**: Seamlessly scan-to-pay with integrated **UPI** detection and native app launching.
 -   **📂 Smart History**: All scans are saved locally with automatic deduplication and favoriting.
--   **🎨 Pro QR Generator**: Create custom QR codes for URLs, WiFi, Contacts, and more with persistent drafts.
+-   **🎨 QR Generator**: Create custom QR codes for URLs, WiFi, Contacts, and more with persistent drafts.
 -   **🛡️ Privacy First**: All scan data remains on your device. No cloud syncing required.
 -   **🌐 Accessibility & Performance**: Fully optimized with `RepaintBoundary` for 60fps performance and `Semantics` for accessibility.
 
@@ -24,7 +22,7 @@
 
 ## 🏗️ Architecture
 
-QuickScan Pro follows a **Feature-First Architecture** for maximum scalability and maintainability:
+QuickScan follows a **Feature-First Architecture** for high scalability and maintainability:
 
 ```text
 lib/
@@ -45,4 +43,4 @@ lib/
 -   **Performance**: Optimized rendering paths for low-latency scanning.
 
 ---
-Built with ❤️ for a world-class scanning experience.
+Built for a functional scanning experience.

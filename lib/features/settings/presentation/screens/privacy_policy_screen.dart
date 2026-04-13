@@ -42,7 +42,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               _buildSection(
                 context,
                 'Third-Party Services',
-                'QuickScan may use third-party libraries for core features like scanning and database management. These libraries are used according to their respective privacy policies.',
+                'QuickScan uses Google AdMob to display advertisements. AdMob may collect certain device identifiers and anonymized usage data to serve personalized ads. Please refer to Google\'s Privacy & Terms for more information.',
               ),
               _buildSection(
                 context,

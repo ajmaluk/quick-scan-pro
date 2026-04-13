@@ -10,7 +10,7 @@ class ScannerOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Backdrop Blur for a more premium look
+        // Backdrop Blur for a refined look
         Positioned.fill(
           child: RepaintBoundary(
             child: BackdropFilter(
