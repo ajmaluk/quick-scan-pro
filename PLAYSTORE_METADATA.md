@@ -41,5 +41,5 @@ QR code scanner, barcode scanner, barcode reader, QR code generator, batch barco
 Productivity / Tools
 
 ## Version Details
-- Current Version: 1.0.3+4
+- Current Version: 1.0.2+5
 - Developed by Ajmal U K at Uthakkan.
