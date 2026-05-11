@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,6 +70,7 @@ class GeneratorState {
 /// A StateNotifier that handles the configuration and updates for QR code generation.
 class GeneratorNotifier extends StateNotifier<GeneratorState> {
   static const _prefKey = 'qr_generator_state';
+  Timer? _saveDebounce;
 
   GeneratorNotifier() : super(GeneratorState()) {
     _loadState();
@@ -95,39 +97,50 @@ class GeneratorNotifier extends StateNotifier<GeneratorState> {
     }
   }
 
+  void _scheduleSave() {
+    _saveDebounce?.cancel();
+    _saveDebounce = Timer(const Duration(milliseconds: 300), _saveState);
+  }
+
   /// Sets the type of content for the QR code (URL, Email, etc.).
   void setType(ScanType type) {
     state = state.copyWith(type: type);
-    _saveState();
+    _scheduleSave();
   }
 
   /// Sets the raw content string for the QR code.
   void setContent(String content) {
     state = state.copyWith(content: content);
-    _saveState();
+    _scheduleSave();
   }
 
   /// Sets the foreground color of the QR code modules.
   void setForegroundColor(Color color) {
     state = state.copyWith(foregroundColor: color);
-    _saveState();
+    _scheduleSave();
   }
 
   /// Sets the background color of the QR code.
   void setBackgroundColor(Color color) {
     state = state.copyWith(backgroundColor: color);
-    _saveState();
+    _scheduleSave();
   }
 
   /// Sets the shape of the QR code eyes (corner squares).
   void setEyeShape(QrEyeShape shape) {
     state = state.copyWith(eyeShape: shape);
-    _saveState();
+    _scheduleSave();
   }
 
   /// Sets the shape of the internal QR code data modules.
   void setDataModuleShape(QrDataModuleShape shape) {
     state = state.copyWith(dataModuleShape: shape);
-    _saveState();
+    _scheduleSave();
+  }
+
+  @override
+  void dispose() {
+    _saveDebounce?.cancel();
+    super.dispose();
   }
 }

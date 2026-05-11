@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/dimensions.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
+import 'package:quickscan_pro/core/constants/app_constants.dart';
 import 'package:quickscan_pro/core/constants/strings.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -17,10 +18,8 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top + 16;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.about),
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: Theme.of(context).brightness == Brightness.dark
@@ -28,10 +27,17 @@ class AboutScreen extends StatelessWidget {
               : AppColors.lightBackgroundGradient,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDimensions.lg),
+          padding: EdgeInsets.fromLTRB(
+            AppDimensions.lg,
+            topPadding,
+            AppDimensions.lg,
+            AppDimensions.lg,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _buildHeader(context),
+              const SizedBox(height: 32),
               _buildCompanyHeader(context),
               const SizedBox(height: 32),
               _buildMissionVision(context),
@@ -45,6 +51,25 @@ class AboutScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          AppStrings.about,
+          style: AppTextStyles.h2.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ],
     );
   }
 
@@ -361,7 +386,7 @@ class AboutScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(100),
             ),
             child: Text(
-              'Version 1.0.0',
+              'Version ${AppConstants.version}',
               style: AppTextStyles.labelSmall.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,

@@ -65,14 +65,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.ajmal.quickscanpro"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.0.2"
+        versionCode = 6
+        versionName = "1.0.3"
 
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")

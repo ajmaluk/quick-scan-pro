@@ -9,10 +9,8 @@ class TermsConditionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top + 16;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Terms & Conditions'),
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: Theme.of(context).brightness == Brightness.dark
@@ -20,10 +18,17 @@ class TermsConditionsScreen extends StatelessWidget {
               : AppColors.lightBackgroundGradient,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDimensions.lg),
+          padding: EdgeInsets.fromLTRB(
+            AppDimensions.lg,
+            topPadding,
+            AppDimensions.lg,
+            AppDimensions.lg,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _buildHeader(context),
+              const SizedBox(height: 32),
               _buildSection(
                 context,
                 'Introduction',
@@ -73,6 +78,25 @@ class TermsConditionsScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          'Terms & Conditions',
+          style: AppTextStyles.h2.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ],
     );
   }
 

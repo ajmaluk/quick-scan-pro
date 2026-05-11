@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
 import 'package:quickscan_pro/core/theme/dimensions.dart';
+import 'package:quickscan_pro/core/constants/app_constants.dart';
 import 'package:quickscan_pro/core/constants/strings.dart';
 
 class HelpScreen extends StatelessWidget {
@@ -38,10 +39,8 @@ class HelpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top + 16;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.helpSupport),
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: Theme.of(context).brightness == Brightness.dark
@@ -49,10 +48,17 @@ class HelpScreen extends StatelessWidget {
               : AppColors.lightBackgroundGradient,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDimensions.lg),
+          padding: EdgeInsets.fromLTRB(
+            AppDimensions.lg,
+            topPadding,
+            AppDimensions.lg,
+            AppDimensions.lg,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _buildHeader(context),
+              const SizedBox(height: 32),
               _buildHeaderSection(context),
               const SizedBox(height: 32),
               _buildContactSection(context),
@@ -64,6 +70,25 @@ class HelpScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          AppStrings.helpSupport,
+          style: AppTextStyles.h2.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ],
     );
   }
 
@@ -183,7 +208,7 @@ class HelpScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'QuickScan v1.0.0',
+            'QuickScan ${AppConstants.version}',
             style: AppTextStyles.bodySmall.copyWith(
               color: Theme.of(context)
                   .colorScheme

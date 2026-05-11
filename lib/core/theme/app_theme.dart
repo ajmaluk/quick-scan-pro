@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'colors.dart';
 import 'text_styles.dart';
 import 'dimensions.dart';
@@ -32,7 +31,6 @@ class AppTheme {
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
         iconTheme: IconThemeData(color: AppColors.lightTextPrimary),
       ),
       colorScheme: const ColorScheme.light(
@@ -197,7 +195,6 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
         titleTextStyle: AppTextStyles.h3,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
       colorScheme: const ColorScheme.dark(

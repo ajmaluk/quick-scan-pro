@@ -4,13 +4,21 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
+import 'package:quickscan_pro/core/services/permission_service.dart';
 import 'package:quickscan_pro/core/utils/content_analyzer.dart';
 import 'package:quickscan_pro/data/models/scan_history.dart';
 import 'package:quickscan_pro/features/batch_scan/logic/batch_provider.dart';
 import 'package:quickscan_pro/features/history/logic/history_provider.dart';
 
 class BatchScannerScreen extends ConsumerStatefulWidget {
-  const BatchScannerScreen({super.key});
+  final Future<PermissionStatus> Function()? permissionRequestOverride;
+  final Future<bool> Function()? openAppSettingsOverride;
+
+  const BatchScannerScreen({
+    super.key,
+    this.permissionRequestOverride,
+    this.openAppSettingsOverride,
+  });
 
   @override
   ConsumerState<BatchScannerScreen> createState() => _BatchScannerScreenState();
@@ -36,14 +44,15 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
     }
 
     try {
-      final status = await Permission.camera
-          .request()
+      final status = await PermissionService.requestCamera(
+            requestOverride: widget.permissionRequestOverride,
+          )
           .timeout(const Duration(seconds: 5), onTimeout: () => PermissionStatus.denied);
 
       if (mounted) {
         setState(() {
-          _hasPermission = status.isGranted;
-          _isPermissionPermanentlyDenied = status.isPermanentlyDenied || status.isRestricted;
+          _hasPermission = PermissionService.isGranted(status);
+          _isPermissionPermanentlyDenied = PermissionService.isBlocked(status);
           _isCheckingPermission = false;
         });
       }
@@ -92,7 +101,19 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: _isPermissionPermanentlyDenied ? openAppSettings : _checkPermission,
+                  onPressed: _isPermissionPermanentlyDenied
+                      ? () async {
+                          final messenger = ScaffoldMessenger.maybeOf(context);
+                          final opened = await PermissionService.openSettings(
+                            openAppSettingsOverride: widget.openAppSettingsOverride,
+                          );
+                          if (!opened) {
+                            messenger?.showSnackBar(
+                              const SnackBar(content: Text('Open app settings to grant camera access')),
+                            );
+                          }
+                        }
+                      : _checkPermission,
                   child: Text(_isPermissionPermanentlyDenied ? 'Open Settings' : 'Grant Permission'),
                 ),
               ],

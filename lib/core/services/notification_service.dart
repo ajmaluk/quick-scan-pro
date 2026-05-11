@@ -203,23 +203,25 @@ class NotificationService {
         return true;
       }
 
-      final androidPlugin = _notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-      final androidGranted = await androidPlugin?.requestNotificationsPermission();
-
-      final iosPlugin = _notificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-      final macosPlugin = _notificationsPlugin.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>();
-      final iosGranted = await iosPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-      final macosGranted = await macosPlugin?.requestPermissions(alert: true, badge: true, sound: true);
-
       if (defaultTargetPlatform == TargetPlatform.android) {
-        return androidGranted ?? false;
+        final androidPlugin = _notificationsPlugin
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+        return await androidPlugin?.requestNotificationsPermission() ?? true;
       }
 
       if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final iosPlugin = _notificationsPlugin
+            .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+        final iosGranted =
+            await iosPlugin?.requestPermissions(alert: true, badge: true, sound: true);
         return iosGranted ?? false;
       }
 
       if (defaultTargetPlatform == TargetPlatform.macOS) {
+        final macosPlugin = _notificationsPlugin
+            .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>();
+        final macosGranted =
+            await macosPlugin?.requestPermissions(alert: true, badge: true, sound: true);
         return macosGranted ?? false;
       }
 

@@ -6,12 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
+import 'package:quickscan_pro/core/services/permission_service.dart';
 import 'package:quickscan_pro/core/widgets/press_scale.dart';
 import 'package:quickscan_pro/core/utils/content_analyzer.dart';
 import 'package:quickscan_pro/core/utils/action_url_builder.dart';
@@ -122,14 +122,12 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
 
   Future<bool> _requestGalleryPermission() async {
     if (Platform.isAndroid) {
-      // Android 13+ uses scoped media permissions; image_gallery_saver can
-      // usually persist through MediaStore without broad storage grants.
       return true;
     }
 
     if (Platform.isIOS) {
-      final status = await Permission.photosAddOnly.request();
-      return status.isGranted || status.isLimited;
+      final status = await PermissionService.requestPhotosAddOnly();
+      return PermissionService.isGranted(status);
     }
 
     return true;
