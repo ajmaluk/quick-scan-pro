@@ -142,7 +142,7 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
 
   Widget _buildGlassHeader(BatchNotifier notifier) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+      padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 16, 20, 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -296,7 +296,7 @@ class _BatchScannerScreenState extends ConsumerState<BatchScannerScreen> {
     return Expanded(
       flex: 4,
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.fromLTRB(24, 0, 24, MediaQuery.of(context).padding.bottom + 24),
         itemCount: state.scans.length,
         separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {

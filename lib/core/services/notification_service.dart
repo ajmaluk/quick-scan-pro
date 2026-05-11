@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 import 'package:quickscan_pro/features/batch_scan/presentation/screens/batch_scanner_screen.dart';
 import 'package:quickscan_pro/features/home/presentation/screens/home_screen.dart';
 import 'package:quickscan_pro/features/scanner/presentation/screens/scanner_screen.dart';
@@ -137,7 +138,7 @@ class NotificationService {
         }
       }
     } catch (e) {
-      debugPrint('Notification initialization error: $e');
+      AppLogger.debug('Notification initialization error: $e');
     }
   }
 
@@ -227,7 +228,7 @@ class NotificationService {
 
       return true;
     } catch (e) {
-      debugPrint('Notification permission error: $e');
+      AppLogger.debug('Notification permission error: $e');
       return false;
     }
   }
@@ -270,7 +271,7 @@ class NotificationService {
         payload: payload,
       );
     } catch (e) {
-      debugPrint('Error showing notification: $e');
+      AppLogger.debug('Error showing notification: $e');
     }
   }
 
@@ -307,7 +308,7 @@ class NotificationService {
         payload: payload,
       );
     } catch (e) {
-      debugPrint('Error scheduling daily notification: $e');
+      AppLogger.debug('Error scheduling daily notification: $e');
     }
   }
 
@@ -316,7 +317,7 @@ class NotificationService {
     try {
       await _notificationsPlugin.cancelAll();
     } catch (e) {
-      debugPrint('Error cancelling notifications: $e');
+      AppLogger.debug('Error cancelling notifications: $e');
     }
   }
 }

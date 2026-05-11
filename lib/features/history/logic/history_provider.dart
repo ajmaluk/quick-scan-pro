@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quickscan_pro/data/models/scan_history.dart';
 import 'package:quickscan_pro/data/local/hive_service.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 
 /// A provider that manages the state of the scan history.
 final historyProvider = StateNotifierProvider<HistoryNotifier, List<ScanHistory>>((ref) {
@@ -32,7 +33,7 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
       };
       _scansListenable?.addListener(_boxListener!);
     } catch (e) {
-      debugPrint('Error loading history: $e');
+      AppLogger.debug('Error loading history: $e');
     }
   }
 
@@ -61,7 +62,7 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
 
       await HiveService.addScan(scan);
     } catch (e) {
-      debugPrint('Error in HistoryNotifier.addScan: $e');
+      AppLogger.debug('Error in HistoryNotifier.addScan: $e');
     }
   }
 
@@ -74,7 +75,7 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
         await HiveService.deleteScan(actualIndex);
       }
     } catch (e) {
-      debugPrint('Error in HistoryNotifier.deleteScanById: $e');
+      AppLogger.debug('Error in HistoryNotifier.deleteScanById: $e');
     }
   }
 
@@ -90,7 +91,7 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
         await HiveService.updateScan(actualIndex, scan);
       }
     } catch (e) {
-      debugPrint('Error in HistoryNotifier.toggleFavoriteById: $e');
+      AppLogger.debug('Error in HistoryNotifier.toggleFavoriteById: $e');
     }
   }
 
@@ -99,7 +100,7 @@ class HistoryNotifier extends StateNotifier<List<ScanHistory>> {
     try {
       await HiveService.clearAll();
     } catch (e) {
-      debugPrint('Error in HistoryNotifier.clearAll: $e');
+      AppLogger.debug('Error in HistoryNotifier.clearAll: $e');
     }
   }
 

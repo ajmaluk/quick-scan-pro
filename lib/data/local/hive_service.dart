@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quickscan_pro/core/constants/app_constants.dart';
 import 'package:quickscan_pro/data/models/scan_history.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 
 /// A service class that handles all Hive database operations for the application.
 class HiveService {
@@ -12,7 +12,7 @@ class HiveService {
       Hive.registerAdapter(ScanHistoryAdapter());
       await Hive.openBox<ScanHistory>(AppConstants.hiveBoxName);
     } catch (e) {
-      debugPrint('Hive initialization error: $e');
+      AppLogger.debug('Hive initialization error: $e');
       rethrow;
     }
   }
@@ -21,7 +21,7 @@ class HiveService {
   static Box<ScanHistory> get scansBox {
     const boxName = AppConstants.hiveBoxName;
     if (!Hive.isBoxOpen(boxName)) {
-      debugPrint('Warning: Hive box $boxName was not open. Opening now...');
+      AppLogger.debug('Warning: Hive box $boxName was not open. Opening now...');
       // This is a synchronous fallback for safety in getters
       // Note: In a real production app, you should ensure it's opened in main()
     }
@@ -33,7 +33,7 @@ class HiveService {
     try {
       await scansBox.add(scan);
     } catch (e) {
-      debugPrint('Error adding scan to Hive: $e');
+      AppLogger.debug('Error adding scan to Hive: $e');
     }
   }
 
@@ -44,7 +44,7 @@ class HiveService {
         await scansBox.deleteAt(index);
       }
     } catch (e) {
-      debugPrint('Error deleting scan from Hive: $e');
+      AppLogger.debug('Error deleting scan from Hive: $e');
     }
   }
 
@@ -55,7 +55,7 @@ class HiveService {
         await scansBox.putAt(index, scan);
       }
     } catch (e) {
-      debugPrint('Error updating scan in Hive: $e');
+      AppLogger.debug('Error updating scan in Hive: $e');
     }
   }
 
@@ -64,7 +64,7 @@ class HiveService {
     try {
       await scansBox.clear();
     } catch (e) {
-      debugPrint('Error clearing Hive box: $e');
+      AppLogger.debug('Error clearing Hive box: $e');
     }
   }
 }

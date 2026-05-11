@@ -34,6 +34,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
   final MobileScannerController _scannerController = MobileScannerController();
+  static const List<_NavItem> _navItems = [
+    _NavItem(Icons.home_rounded, 'Home'),
+    _NavItem(Icons.history_rounded, 'History'),
+    _NavItem(Icons.auto_awesome_rounded, 'Generate'),
+    _NavItem(Icons.settings_rounded, 'Settings'),
+  ];
 
   @override
   void initState() {
@@ -104,9 +110,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         currentIndex: currentIndex,
         onTap: (index) => ref.read(homeTabProvider.notifier).state = index,
       ),
-      floatingActionButton: currentIndex == 3
-          ? null
-          : _buildGlassFAB(),
+      floatingActionButton: currentIndex == 3 ? null : _buildGlassFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -128,7 +132,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-        child: const Icon(Icons.qr_code_scanner_rounded, color: Colors.white, size: 28),
+        child: const Icon(Icons.qr_code_scanner_rounded,
+            color: Colors.white, size: 28),
       ),
     );
   }
@@ -194,7 +199,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               TextButton(
                 onPressed: () => ref.read(homeTabProvider.notifier).state = 1,
-                child: Text('View All', style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary)),
+                child: Text('View All',
+                    style: AppTextStyles.labelMedium
+                        .copyWith(color: AppColors.primary)),
               ),
             ],
           ),
@@ -223,7 +230,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             shape: BoxShape.circle,
             border: Border.all(color: Theme.of(context).dividerColor),
           ),
-          child: const Icon(Icons.bolt_rounded, color: AppColors.primary, size: 24),
+          child: const Icon(Icons.bolt_rounded,
+              color: AppColors.primary, size: 24),
         ),
       ],
     );
@@ -256,7 +264,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.center_focus_strong_rounded, color: Colors.white, size: 24),
+              child: const Icon(Icons.center_focus_strong_rounded,
+                  color: Colors.white, size: 24),
             ),
             const SizedBox(height: 20),
             Text(
@@ -266,7 +275,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: 8),
             Text(
               'High-speed detection for all QR & Barcodes with AI enhancement.',
-              style: AppTextStyles.bodyMedium.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+              style: AppTextStyles.bodyMedium
+                  .copyWith(color: Colors.white.withValues(alpha: 0.8)),
             ),
             const SizedBox(height: 24),
             Container(
@@ -277,7 +287,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               child: Text(
                 'Open Camera',
-                style: AppTextStyles.labelLarge.copyWith(color: AppColors.primaryDim),
+                style: AppTextStyles.labelLarge
+                    .copyWith(color: AppColors.primaryDim),
               ),
             ),
           ],
@@ -293,15 +304,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       return Row(
         children: [
-          _buildStatItem('Scans', history.length.toString(), Icons.qr_code_2_rounded, AppColors.primary),
+          _buildStatItem('Scans', history.length.toString(),
+              Icons.qr_code_2_rounded, AppColors.primary),
           const SizedBox(width: 16),
-          _buildStatItem('Saved', favoriteCount.toString(), Icons.star_rounded, Colors.amber),
+          _buildStatItem('Saved', favoriteCount.toString(), Icons.star_rounded,
+              Colors.amber),
         ],
       );
     });
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
+  Widget _buildStatItem(
+      String label, String value, IconData icon, Color color) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(20),
@@ -332,20 +346,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisSpacing: 16,
       childAspectRatio: 1.4,
       children: [
-        _buildActionCard('Gallery', Icons.image_rounded, AppColors.tertiary, _scanFromGallery),
-        _buildActionCard('Clipboard', Icons.content_paste_rounded, AppColors.accent, _scanFromClipboard),
-        _buildActionCard('Batch', Icons.layers_rounded, AppColors.secondary, () {
+        _buildActionCard('Gallery', Icons.image_rounded, AppColors.tertiary,
+            _scanFromGallery),
+        _buildActionCard('Clipboard', Icons.content_paste_rounded,
+            AppColors.accent, _scanFromClipboard),
+        _buildActionCard('Batch', Icons.layers_rounded, AppColors.secondary,
+            () {
           Navigator.of(context).push(SharedAxisPageRoute(
             page: const BatchScannerScreen(),
             transitionType: SharedAxisTransitionType.vertical,
           ));
         }),
-        _buildActionCard('History', Icons.history_rounded, AppColors.primary, () => ref.read(homeTabProvider.notifier).state = 1),
+        _buildActionCard('History', Icons.history_rounded, AppColors.primary,
+            () => ref.read(homeTabProvider.notifier).state = 1),
       ],
     );
   }
 
-  Widget _buildActionCard(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionCard(
+      String title, IconData icon, Color color, VoidCallback onTap) {
     return PressScale(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
@@ -372,54 +391,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Consumer(builder: (context, ref, child) {
       final history = ref.watch(historyProvider);
       if (history.isEmpty) return const SizedBox.shrink();
-      
+
       final recent = history.take(3).toList();
       return Column(
-        children: recent.map((scan) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
+        children: recent
+            .map((scan) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.qr_code_rounded,
+                              color: AppColors.primary, size: 20),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(scan.content,
+                                  style: AppTextStyles.labelMedium,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis),
+                              Text(scan.format,
+                                  style: AppTextStyles.labelSmall),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right_rounded,
+                            color: AppColors.textDimmed, size: 20),
+                      ],
+                    ),
                   ),
-                  child: const Icon(Icons.qr_code_rounded, color: AppColors.primary, size: 20),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(scan.content, style: AppTextStyles.labelMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text(scan.format, style: AppTextStyles.labelSmall),
-                    ],
-                  ),
-                ),
-                const Icon(Icons.chevron_right_rounded, color: AppColors.textDimmed, size: 20),
-              ],
-            ),
-          ),
-        )).toList(),
+                ))
+            .toList(),
       );
     });
   }
 
-  Widget _buildGlassNavBar({required int currentIndex, required ValueChanged<int> onTap}) {
-    final items = [
-      const _NavItem(Icons.home_rounded, 'Home'),
-      const _NavItem(Icons.history_rounded, 'History'),
-      const _NavItem(Icons.auto_awesome_rounded, 'Generate'),
-      const _NavItem(Icons.settings_rounded, 'Settings'),
-    ];
-
+  Widget _buildGlassNavBar(
+      {required int currentIndex, required ValueChanged<int> onTap}) {
     return Container(
       margin: const EdgeInsets.fromLTRB(24, 0, 24, 32),
       height: 72,
@@ -429,7 +452,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+              color:
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(36),
               border: Border.all(color: Theme.of(context).dividerColor),
               boxShadow: [
@@ -443,7 +467,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(items.length, (index) {
+              children: List.generate(_navItems.length, (index) {
                 final isActive = currentIndex == index;
                 return Expanded(
                   child: PressScale(
@@ -455,8 +479,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
-                        color: isActive 
-                            ? AppColors.primary.withValues(alpha: 0.1) 
+                        color: isActive
+                            ? AppColors.primary.withValues(alpha: 0.1)
                             : Colors.transparent,
                       ),
                       child: Column(
@@ -467,20 +491,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             scale: isActive ? 1.1 : 1.0,
                             duration: const Duration(milliseconds: 200),
                             child: Icon(
-                              items[index].icon,
-                              color: isActive ? AppColors.primary : AppColors.textDimmed,
+                              _navItems[index].icon,
+                              color: isActive
+                                  ? AppColors.primary
+                                  : AppColors.textDimmed,
                               size: 24,
                             ),
                           ),
                           const SizedBox(height: 4),
                           AnimatedSlide(
-                            offset: isActive ? Offset.zero : const Offset(0, 0.5),
+                            offset:
+                                isActive ? Offset.zero : const Offset(0, 0.5),
                             duration: const Duration(milliseconds: 200),
                             child: AnimatedOpacity(
                               opacity: isActive ? 1 : 0,
                               duration: const Duration(milliseconds: 200),
                               child: Text(
-                                items[index].label,
+                                _navItems[index].label,
                                 style: AppTextStyles.labelSmall.copyWith(
                                   color: AppColors.primary,
                                   fontSize: 10,
@@ -501,6 +528,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+
   Future<void> _scanFromClipboard() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data?.text != null && data!.text!.isNotEmpty) {

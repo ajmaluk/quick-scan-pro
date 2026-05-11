@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 
 /// A provider that manages the camera scanner state.
 final scannerProvider =
@@ -55,7 +55,7 @@ class ScannerNotifier extends StateNotifier<ScannerState> {
       state = state.copyWith(isFlashOn: !state.isFlashOn);
       controller.toggleTorch();
     } catch (e) {
-      debugPrint('Error toggling flash: $e');
+      AppLogger.debug('Error toggling flash: $e');
     }
   }
 
@@ -68,7 +68,7 @@ class ScannerNotifier extends StateNotifier<ScannerState> {
       state = state.copyWith(cameraFacing: newFacing);
       controller.switchCamera();
     } catch (e) {
-      debugPrint('Error switching camera: $e');
+      AppLogger.debug('Error switching camera: $e');
     }
   }
 
@@ -78,7 +78,7 @@ class ScannerNotifier extends StateNotifier<ScannerState> {
       state = state.copyWith(zoomScale: scale);
       controller.setZoomScale(scale);
     } catch (e) {
-      debugPrint('Error setting zoom: $e');
+      AppLogger.debug('Error setting zoom: $e');
     }
   }
 
@@ -88,7 +88,7 @@ class ScannerNotifier extends StateNotifier<ScannerState> {
       state = state.copyWith(isPaused: true);
       controller.stop();
     } catch (e) {
-      debugPrint('Error pausing scanner: $e');
+      AppLogger.debug('Error pausing scanner: $e');
     }
   }
 
@@ -98,7 +98,7 @@ class ScannerNotifier extends StateNotifier<ScannerState> {
       state = state.copyWith(isPaused: false);
       controller.start();
     } catch (e) {
-      debugPrint('Error resuming scanner: $e');
+      AppLogger.debug('Error resuming scanner: $e');
     }
   }
 

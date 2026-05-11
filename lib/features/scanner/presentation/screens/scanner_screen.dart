@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:quickscan_pro/core/navigation/shared_axis_route.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
@@ -120,6 +119,9 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+
     if (_isCheckingPermission) {
       return const Scaffold(
         backgroundColor: Colors.black,
@@ -208,7 +210,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
             // Glassmorphic Top Bar
             Positioned(
-              top: 60,
+              top: topInset + 16,
               left: 20,
               right: 20,
               child: RepaintBoundary(
@@ -267,14 +269,14 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
             // Zoom Slider (Vertical Minimalist)
             Positioned(
               right: 24,
-              top: 150,
-              bottom: 220,
+              top: topInset + 106,
+              bottom: bottomInset + 180,
               child: _buildVerticalZoomSlider(scannerState.zoomScale, scannerNotifier),
             ),
 
             // Bottom Controls (Obsidian Lens)
             Positioned(
-              bottom: 40,
+              bottom: bottomInset + 20,
               left: 0,
               right: 0,
               child: Column(
@@ -314,7 +316,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
     if (!_scanDeduplicator.shouldProcess(barcode.rawValue!, DateTime.now())) return;
     
     _isHandlingDetection = true;
-    Vibrate.feedback(FeedbackType.success);
+    HapticFeedback.mediumImpact();
     ref.read(scannerProvider.notifier).pause();
 
     showModalBottomSheet(

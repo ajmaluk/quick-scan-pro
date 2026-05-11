@@ -10,6 +10,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top + 16;
+    final bottomPadding = MediaQuery.of(context).padding.bottom + AppDimensions.lg;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -22,7 +23,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             AppDimensions.lg,
             topPadding,
             AppDimensions.lg,
-            AppDimensions.lg,
+            bottomPadding,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

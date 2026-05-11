@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:quickscan_pro/core/theme/colors.dart';
 import 'package:quickscan_pro/core/theme/text_styles.dart';
 import 'package:quickscan_pro/core/services/permission_service.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 import 'package:quickscan_pro/core/widgets/press_scale.dart';
 import 'package:quickscan_pro/core/utils/content_analyzer.dart';
 import 'package:quickscan_pro/core/utils/action_url_builder.dart';
@@ -46,7 +47,7 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
           await image.toByteData(format: ui.ImageByteFormat.png);
       return byteData?.buffer.asUint8List();
     } catch (e) {
-      debugPrint('Error capturing QR: $e');
+      AppLogger.debug('Error capturing QR: $e');
       return null;
     }
   }
@@ -54,7 +55,7 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
   Future<void> _saveToGallery() async {
     final type = ref.read(generatorProvider).type;
     final content = ref.read(generatorProvider).content;
-    
+
     if (content.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter content to generate QR')),
@@ -90,7 +91,8 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
         return;
       }
 
-      final fileName = 'quickscan_qr_${DateTime.now().millisecondsSinceEpoch}.png';
+      final fileName =
+          'quickscan_qr_${DateTime.now().millisecondsSinceEpoch}.png';
       final result = await SaverGallery.saveImage(
         imageBytes,
         quality: 100,
@@ -136,7 +138,7 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
   Future<void> _shareQR() async {
     final type = ref.read(generatorProvider).type;
     final content = ref.read(generatorProvider).content;
-    
+
     if (content.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter content to generate QR')),
@@ -219,7 +221,8 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                       child: RepaintBoundary(
                         key: _qrKey,
                         child: QRPreviewCard(
-                          key: ValueKey('${generatorState.content}_${generatorState.eyeShape}_${generatorState.dataModuleShape}_${generatorState.foregroundColor.toARGB32()}_${generatorState.backgroundColor.toARGB32()}'),
+                          key: ValueKey(
+                              '${generatorState.content}_${generatorState.eyeShape}_${generatorState.dataModuleShape}_${generatorState.foregroundColor.toARGB32()}_${generatorState.backgroundColor.toARGB32()}'),
                           data: generatorState.content,
                           foregroundColor: generatorState.foregroundColor,
                           backgroundColor: generatorState.backgroundColor,
@@ -231,7 +234,8 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                   ),
                   const SizedBox(height: 32),
                   if (generatorState.content.trim().isEmpty)
-                    _buildEmptyStateHints(generatorNotifier, generatorState.type),
+                    _buildEmptyStateHints(
+                        generatorNotifier, generatorState.type),
                   const SizedBox(height: 24),
                   _buildCustomizationOptions(generatorState, generatorNotifier),
                   const SizedBox(height: 32),
@@ -240,16 +244,22 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Content', style: AppTextStyles.labelMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                        Text('Content',
+                            style: AppTextStyles.labelMedium.copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onSurface)),
                         const SizedBox(height: 12),
                         if (generatorState.type == ScanType.upi)
                           _buildUpiInputForm()
                         else
                           Container(
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHigh,
                               borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: Theme.of(context).dividerColor),
+                              border: Border.all(
+                                  color: Theme.of(context).dividerColor),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.1),
@@ -261,7 +271,8 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                             child: TextField(
                               controller: _contentController,
                               maxLines: 4,
-                              onChanged: (value) => generatorNotifier.setContent(value),
+                              onChanged: (value) =>
+                                  generatorNotifier.setContent(value),
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: Theme.of(context).colorScheme.onSurface,
                                 height: 1.5,
@@ -270,24 +281,34 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                               decoration: InputDecoration(
                                 hintText: _getHintText(generatorState.type),
                                 hintStyle: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textDimmed.withValues(alpha: 0.5),
+                                  color: AppColors.textDimmed
+                                      .withValues(alpha: 0.5),
                                 ),
                                 filled: false,
                                 border: InputBorder.none,
-                                contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                suffixIcon: _contentController.text.isNotEmpty
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(right: 8),
-                                        child: IconButton(
-                                          icon: const Icon(Icons.clear_rounded, color: AppColors.textDimmed, size: 20),
-                                          onPressed: () {
-                                            _contentController.clear();
-                                            generatorNotifier.setContent('');
-                                            setState(() {});
-                                          },
-                                        ),
-                                      )
-                                    : null,
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                suffixIcon:
+                                    ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: _contentController,
+                                  builder: (context, value, _) {
+                                    if (value.text.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: IconButton(
+                                        icon: const Icon(Icons.clear_rounded,
+                                            color: AppColors.textDimmed,
+                                            size: 20),
+                                        onPressed: () {
+                                          _contentController.clear();
+                                          generatorNotifier.setContent('');
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -338,28 +359,52 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
     );
   }
 
-  Widget _buildActionButton({required String label, required IconData icon, required VoidCallback? onTap, required bool isPrimary}) {
+  Widget _buildActionButton(
+      {required String label,
+      required IconData icon,
+      required VoidCallback? onTap,
+      required bool isPrimary}) {
     return PressScale(
-      onTap: onTap != null ? () { HapticFeedback.lightImpact(); onTap(); } : () {},
+      onTap: onTap != null
+          ? () {
+              HapticFeedback.lightImpact();
+              onTap();
+            }
+          : () {},
       child: Opacity(
         opacity: onTap != null ? 1.0 : 0.4,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             gradient: isPrimary ? AppColors.primaryGradient : null,
-            color: isPrimary ? null : Theme.of(context).colorScheme.surfaceContainerHigh,
+            color: isPrimary
+                ? null
+                : Theme.of(context).colorScheme.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: isPrimary ? [
-              BoxShadow(color: AppColors.primary.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 5)),
-            ] : null,
-            border: isPrimary ? null : Border.all(color: Theme.of(context).dividerColor),
+            boxShadow: isPrimary
+                ? [
+                    BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5)),
+                  ]
+                : null,
+            border: isPrimary
+                ? null
+                : Border.all(color: Theme.of(context).dividerColor),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isPrimary ? Colors.white : AppColors.primary, size: 20),
+              Icon(icon,
+                  color: isPrimary ? Colors.white : AppColors.primary,
+                  size: 20),
               const SizedBox(width: 8),
-              Text(label, style: AppTextStyles.labelMedium.copyWith(color: isPrimary ? Colors.white : Theme.of(context).colorScheme.onSurface)),
+              Text(label,
+                  style: AppTextStyles.labelMedium.copyWith(
+                      color: isPrimary
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.onSurface)),
             ],
           ),
         ),
@@ -367,33 +412,52 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
     );
   }
 
-  Widget _buildCustomizationOptions(GeneratorState state, GeneratorNotifier notifier) {
+  Widget _buildCustomizationOptions(
+      GeneratorState state, GeneratorNotifier notifier) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Customization', style: AppTextStyles.labelMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+          Text('Customization',
+              style: AppTextStyles.labelMedium
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface)),
           const SizedBox(height: 16),
           SizedBox(
             height: 44,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                _buildOptionChip('Square Eyes', state.eyeShape == QrEyeShape.square, () => notifier.setEyeShape(QrEyeShape.square)),
+                _buildOptionChip(
+                    'Square Eyes',
+                    state.eyeShape == QrEyeShape.square,
+                    () => notifier.setEyeShape(QrEyeShape.square)),
                 const SizedBox(width: 10),
-                _buildOptionChip('Circle Eyes', state.eyeShape == QrEyeShape.circle, () => notifier.setEyeShape(QrEyeShape.circle)),
+                _buildOptionChip(
+                    'Circle Eyes',
+                    state.eyeShape == QrEyeShape.circle,
+                    () => notifier.setEyeShape(QrEyeShape.circle)),
                 const SizedBox(width: 20),
-                _buildOptionChip('Square Dots', state.dataModuleShape == QrDataModuleShape.square, () => notifier.setDataModuleShape(QrDataModuleShape.square)),
+                _buildOptionChip(
+                    'Square Dots',
+                    state.dataModuleShape == QrDataModuleShape.square,
+                    () =>
+                        notifier.setDataModuleShape(QrDataModuleShape.square)),
                 const SizedBox(width: 10),
-                _buildOptionChip('Circle Dots', state.dataModuleShape == QrDataModuleShape.circle, () => notifier.setDataModuleShape(QrDataModuleShape.circle)),
+                _buildOptionChip(
+                    'Circle Dots',
+                    state.dataModuleShape == QrDataModuleShape.circle,
+                    () =>
+                        notifier.setDataModuleShape(QrDataModuleShape.circle)),
               ],
             ),
           ),
           const SizedBox(height: 24),
-          _buildColorPicker('Foreground Color', state.foregroundColor, (color) => notifier.setForegroundColor(color)),
+          _buildColorPicker('Foreground Color', state.foregroundColor,
+              (color) => notifier.setForegroundColor(color)),
           const SizedBox(height: 20),
-          _buildColorPicker('Background Color', state.backgroundColor, (color) => notifier.setBackgroundColor(color)),
+          _buildColorPicker('Background Color', state.backgroundColor,
+              (color) => notifier.setBackgroundColor(color)),
         ],
       ),
     );
@@ -420,10 +484,13 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.auto_awesome_rounded, color: AppColors.primary, size: 20),
+                  child: const Icon(Icons.auto_awesome_rounded,
+                      color: AppColors.primary, size: 20),
                 ),
                 const SizedBox(width: 12),
-                Text('Quick Start', style: AppTextStyles.labelMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Quick Start',
+                    style: AppTextStyles.labelMedium.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
               ],
             ),
             const SizedBox(height: 16),
@@ -439,13 +506,16 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                     setState(() {});
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(color: Theme.of(context).dividerColor),
                     ),
-                    child: Text(value, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
+                    child: Text(value,
+                        style: AppTextStyles.labelSmall
+                            .copyWith(color: AppColors.textDimmed)),
                   ),
                 );
               }).toList(),
@@ -463,21 +533,42 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : Theme.of(context).colorScheme.surfaceContainerHigh,
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.1)
+              : Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? AppColors.primary.withValues(alpha: 0.3) : Theme.of(context).dividerColor),
+          border: Border.all(
+              color: isSelected
+                  ? AppColors.primary.withValues(alpha: 0.3)
+                  : Theme.of(context).dividerColor),
         ),
-        child: Center(child: Text(label, style: AppTextStyles.labelSmall.copyWith(color: isSelected ? AppColors.primary : AppColors.textDimmed))),
+        child: Center(
+            child: Text(label,
+                style: AppTextStyles.labelSmall.copyWith(
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textDimmed))),
       ),
     );
   }
 
-  Widget _buildColorPicker(String label, Color color, Function(Color) onColorSelected) {
-    final colors = [Colors.black, Colors.white, AppColors.primary, AppColors.secondary, Colors.red, Colors.blue, Colors.green];
+  Widget _buildColorPicker(
+      String label, Color color, Function(Color) onColorSelected) {
+    final colors = [
+      Colors.black,
+      Colors.white,
+      AppColors.primary,
+      AppColors.secondary,
+      Colors.red,
+      Colors.blue,
+      Colors.green
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
+        Text(label,
+            style:
+                AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
         const SizedBox(height: 12),
         SizedBox(
           height: 36,
@@ -496,9 +587,18 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                   decoration: BoxDecoration(
                     color: c,
                     shape: BoxShape.circle,
-                    border: Border.all(color: isSelected ? AppColors.primary : Colors.white.withValues(alpha: 0.1), width: isSelected ? 2 : 1),
+                    border: Border.all(
+                        color: isSelected
+                            ? AppColors.primary
+                            : Colors.white.withValues(alpha: 0.1),
+                        width: isSelected ? 2 : 1),
                   ),
-                  child: isSelected ? Icon(Icons.check, size: 18, color: c == Colors.white ? Colors.black : Colors.white) : null,
+                  child: isSelected
+                      ? Icon(Icons.check,
+                          size: 18,
+                          color:
+                              c == Colors.white ? Colors.black : Colors.white)
+                      : null,
                 ),
               );
             },
@@ -533,7 +633,8 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
                 label: 'Amount (Optional)',
                 hint: '0.00',
                 icon: Icons.currency_rupee_rounded,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
             ),
             const SizedBox(width: 12),
@@ -568,15 +669,18 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
         controller: controller,
         onChanged: (_) => _updateUpiContent(),
         keyboardType: keyboardType,
-        style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.onSurface),
+        style: AppTextStyles.bodyMedium
+            .copyWith(color: Theme.of(context).colorScheme.onSurface),
         cursorColor: AppColors.primary,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed),
+          labelStyle:
+              AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed),
           hintText: hint,
           prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
     );
@@ -584,29 +688,47 @@ class _QRGeneratorScreenState extends ConsumerState<QRGeneratorScreen> {
 
   String _getHintText(ScanType type) {
     switch (type) {
-      case ScanType.url: return 'https://example.com';
-      case ScanType.email: return 'example@mail.com';
-      case ScanType.phone: return '+1234567890';
-      case ScanType.wifi: return 'WIFI:T:WPA;S:NetworkName;P:password;;';
-      case ScanType.contact: return 'BEGIN:VCARD...';
-      case ScanType.sms: return 'SMSTO:+1234567890:Message';
-      case ScanType.geo: return 'geo:37.7749,-122.4194';
-      default: return 'Enter your text here...';
+      case ScanType.url:
+        return 'https://example.com';
+      case ScanType.email:
+        return 'example@mail.com';
+      case ScanType.phone:
+        return '+1234567890';
+      case ScanType.wifi:
+        return 'WIFI:T:WPA;S:NetworkName;P:password;;';
+      case ScanType.contact:
+        return 'BEGIN:VCARD...';
+      case ScanType.sms:
+        return 'SMSTO:+1234567890:Message';
+      case ScanType.geo:
+        return 'geo:37.7749,-122.4194';
+      default:
+        return 'Enter your text here...';
     }
   }
 
   List<String> _suggestionsFor(ScanType type) {
     switch (type) {
-      case ScanType.url: return ['https://example.com', 'https://myportfolio.com'];
-      case ScanType.email: return ['hello@example.com', 'support@quickscan.app'];
-      case ScanType.phone: return ['+14155552671', '+442071838750'];
-      case ScanType.wifi: return ['WIFI:T:WPA;S:OfficeNet;P:secure123;;'];
-      case ScanType.contact: return ['BEGIN:VCARD\nFN:John Doe\nTEL:+14155552671\nEND:VCARD'];
-      case ScanType.sms: return ['SMSTO:+14155552671:Hello from QuickScan'];
-      case ScanType.geo: return ['geo:40.7128,-74.0060', 'geo:51.5072,-0.1276'];
-      case ScanType.upi: return ['ajmal@upi', 'merchant@okaxis', 'shop@ybl'];
-      case ScanType.text: return ['Welcome to QuickScan', 'Scan smart. Move fast.'];
-      default: return ['Enter your text here...'];
+      case ScanType.url:
+        return ['https://example.com', 'https://myportfolio.com'];
+      case ScanType.email:
+        return ['hello@example.com', 'support@quickscan.app'];
+      case ScanType.phone:
+        return ['+14155552671', '+442071838750'];
+      case ScanType.wifi:
+        return ['WIFI:T:WPA;S:OfficeNet;P:secure123;;'];
+      case ScanType.contact:
+        return ['BEGIN:VCARD\nFN:John Doe\nTEL:+14155552671\nEND:VCARD'];
+      case ScanType.sms:
+        return ['SMSTO:+14155552671:Hello from QuickScan'];
+      case ScanType.geo:
+        return ['geo:40.7128,-74.0060', 'geo:51.5072,-0.1276'];
+      case ScanType.upi:
+        return ['ajmal@upi', 'merchant@okaxis', 'shop@ybl'];
+      case ScanType.text:
+        return ['Welcome to QuickScan', 'Scan smart. Move fast.'];
+      default:
+        return ['Enter your text here...'];
     }
   }
 }

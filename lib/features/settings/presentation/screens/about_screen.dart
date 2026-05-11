@@ -9,16 +9,15 @@ import 'package:quickscan_pro/core/constants/strings.dart';
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
-  Future<void> _launchUrl(String url) async {
+  Future<bool> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri)) {
-      throw Exception('Could not launch $url');
-    }
+    return launchUrl(uri);
   }
 
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top + 16;
+    final bottomPadding = MediaQuery.of(context).padding.bottom + AppDimensions.lg;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -31,7 +30,7 @@ class AboutScreen extends StatelessWidget {
             AppDimensions.lg,
             topPadding,
             AppDimensions.lg,
-            AppDimensions.lg,
+            bottomPadding,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +98,7 @@ class AboutScreen extends StatelessWidget {
                       ),
                 ),
                 InkWell(
-                  onTap: () => _launchUrl('https://www.uthakkan.in'),
+                  onTap: () => _openLink(context, 'https://www.uthakkan.in'),
                   child: Text(
                     'www.uthakkan.in',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -124,6 +123,17 @@ class AboutScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _openLink(BuildContext context, String url) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final launched = await _launchUrl(url);
+    if (!context.mounted) return;
+    if (!launched) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Unable to open the website right now.')),
+      );
+    }
   }
 
   Widget _buildMissionVision(BuildContext context) {

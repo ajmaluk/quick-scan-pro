@@ -11,7 +11,6 @@ import 'package:quickscan_pro/data/models/scan_history.dart';
 import 'package:quickscan_pro/features/history/logic/history_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:quickscan_pro/core/constants/strings.dart';
 
 class ScanResultSheet extends ConsumerStatefulWidget {
@@ -24,7 +23,8 @@ class ScanResultSheet extends ConsumerStatefulWidget {
     required this.format,
   });
 
-  static void show(BuildContext context, String content, {String format = 'QR_CODE'}) {
+  static void show(BuildContext context, String content,
+      {String format = 'QR_CODE'}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -39,18 +39,21 @@ class ScanResultSheet extends ConsumerStatefulWidget {
 
 class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
   ScanHistory? _savedScan;
+  late final ScanType _scanType;
+  late final String _typeName;
 
   @override
   void initState() {
     super.initState();
+    _scanType = ContentAnalyzer.analyze(widget.content);
+    _typeName = ContentAnalyzer.getTypeName(_scanType);
     _saveToHistory();
   }
 
   void _saveToHistory() {
-    final type = ContentAnalyzer.analyze(widget.content);
     _savedScan = ScanHistory.create(
       content: widget.content,
-      type: ContentAnalyzer.getTypeName(type).toLowerCase(),
+      type: _typeName.toLowerCase(),
       format: widget.format,
     );
     ref.read(historyProvider.notifier).addScan(_savedScan!);
@@ -64,76 +67,98 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isFavorite = ref.watch(historyProvider).any((s) => s.content == widget.content && s.isFavorite);
-    final type = ContentAnalyzer.analyze(widget.content);
-    final typeName = ContentAnalyzer.getTypeName(type);
+    final type = _scanType;
+    final isFavorite = ref.watch(
+      historyProvider.select(
+        (history) =>
+            history.any((s) => s.content == widget.content && s.isFavorite),
+      ),
+    );
     final bottomSafePadding = MediaQuery.of(context).padding.bottom;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: SingleChildScrollView(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.9),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                border: Border.all(color: Theme.of(context).dividerColor),
-              ),
-              padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottomSafePadding),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      _buildTypeIcon(type),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(typeName, style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary), overflow: TextOverflow.ellipsis, maxLines: 1),
-                            Text(widget.format, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed), overflow: TextOverflow.ellipsis, maxLines: 1),
-                          ],
-                        ),
-                      ),
-                      _buildFavoriteButton(isFavorite),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context)
+                  .colorScheme
+                  .surfaceContainerHighest
+                  .withValues(alpha: 0.9),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(32)),
+              border: Border.all(color: Theme.of(context).dividerColor),
+            ),
+            padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottomSafePadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Theme.of(context).dividerColor),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    child: type == ScanType.contact && widget.content.startsWith('BEGIN:VCARD')
-                        ? _buildContactDetails(ActionUrlBuilder.parseVCard(widget.content))
-                        : SelectableText(
-                            widget.content,
-                            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                          ),
                   ),
-                  const SizedBox(height: 32),
-                  _buildActionRow(type),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    _buildTypeIcon(_scanType),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(_typeName,
+                              style: AppTextStyles.labelMedium
+                                  .copyWith(color: AppColors.primary),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1),
+                          Text(widget.format,
+                              style: AppTextStyles.labelSmall
+                                  .copyWith(color: AppColors.textDimmed),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1),
+                        ],
+                      ),
+                    ),
+                    _buildFavoriteButton(isFavorite),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                  ),
+                  child: type == ScanType.contact &&
+                          widget.content.startsWith('BEGIN:VCARD')
+                      ? _buildContactDetails(
+                          ActionUrlBuilder.parseVCard(widget.content))
+                      : SelectableText(
+                          widget.content,
+                          style: AppTextStyles.bodyMedium
+                              .copyWith(color: AppColors.textSecondary),
+                        ),
+                ),
+                const SizedBox(height: 32),
+                _buildActionRow(_scanType),
+              ],
             ),
           ),
+        ),
       ),
     );
   }
@@ -143,14 +168,37 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
     Color color;
 
     switch (type) {
-      case ScanType.url: icon = Icons.link_rounded; color = AppColors.primary; break;
-      case ScanType.wifi: icon = Icons.wifi_rounded; color = AppColors.success; break;
-      case ScanType.contact: icon = Icons.person_rounded; color = AppColors.secondary; break;
-      case ScanType.email: icon = Icons.email_rounded; color = AppColors.warning; break;
-      case ScanType.phone: icon = Icons.phone_rounded; color = AppColors.info; break;
-      case ScanType.geo: icon = Icons.location_on_rounded; color = AppColors.accent; break;
-      case ScanType.upi: icon = Icons.account_balance_wallet_rounded; color = AppColors.success; break;
-      default: icon = Icons.text_snippet_rounded; color = AppColors.textDimmed;
+      case ScanType.url:
+        icon = Icons.link_rounded;
+        color = AppColors.primary;
+        break;
+      case ScanType.wifi:
+        icon = Icons.wifi_rounded;
+        color = AppColors.success;
+        break;
+      case ScanType.contact:
+        icon = Icons.person_rounded;
+        color = AppColors.secondary;
+        break;
+      case ScanType.email:
+        icon = Icons.email_rounded;
+        color = AppColors.warning;
+        break;
+      case ScanType.phone:
+        icon = Icons.phone_rounded;
+        color = AppColors.info;
+        break;
+      case ScanType.geo:
+        icon = Icons.location_on_rounded;
+        color = AppColors.accent;
+        break;
+      case ScanType.upi:
+        icon = Icons.account_balance_wallet_rounded;
+        color = AppColors.success;
+        break;
+      default:
+        icon = Icons.text_snippet_rounded;
+        color = AppColors.textDimmed;
     }
 
     return Container(
@@ -166,13 +214,15 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
   Widget _buildFavoriteButton(bool isFavorite) {
     return PressScale(
       onTap: () {
-        Vibrate.feedback(FeedbackType.selection);
+        HapticFeedback.selectionClick();
         _toggleFavorite();
       },
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isFavorite ? Colors.red.withValues(alpha: 0.1) : Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: isFavorite
+              ? Colors.red.withValues(alpha: 0.1)
+              : Theme.of(context).colorScheme.surfaceContainerHighest,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -196,7 +246,10 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
                 gradient: AppColors.primaryGradient,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
-                  BoxShadow(color: AppColors.primary.withValues(alpha: 0.2), blurRadius: 15, offset: const Offset(0, 5)),
+                  BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5)),
                 ],
               ),
               child: Row(
@@ -207,7 +260,9 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
                   Flexible(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(_getMainActionLabel(type), style: AppTextStyles.labelLarge.copyWith(color: Colors.white)),
+                      child: Text(_getMainActionLabel(type),
+                          style: AppTextStyles.labelLarge
+                              .copyWith(color: Colors.white)),
                     ),
                   ),
                 ],
@@ -234,34 +289,51 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Theme.of(context).dividerColor),
         ),
-        child: Icon(icon, color: Theme.of(context).colorScheme.onSurface, size: 22),
+        child: Icon(icon,
+            color: Theme.of(context).colorScheme.onSurface, size: 22),
       ),
     );
   }
 
   IconData _getMainActionIcon(ScanType type) {
     switch (type) {
-      case ScanType.url: return Icons.open_in_browser_rounded;
-      case ScanType.wifi: return Icons.wifi_password_rounded;
-      case ScanType.contact: return Icons.person_add_rounded;
-      case ScanType.email: return Icons.mail_outline_rounded;
-      case ScanType.phone: return Icons.call_rounded;
-      case ScanType.geo: return Icons.map_rounded;
-      case ScanType.upi: return Icons.payment_rounded;
-      default: return Icons.search_rounded;
+      case ScanType.url:
+        return Icons.open_in_browser_rounded;
+      case ScanType.wifi:
+        return Icons.wifi_password_rounded;
+      case ScanType.contact:
+        return Icons.person_add_rounded;
+      case ScanType.email:
+        return Icons.mail_outline_rounded;
+      case ScanType.phone:
+        return Icons.call_rounded;
+      case ScanType.geo:
+        return Icons.map_rounded;
+      case ScanType.upi:
+        return Icons.payment_rounded;
+      default:
+        return Icons.search_rounded;
     }
   }
 
   String _getMainActionLabel(ScanType type) {
     switch (type) {
-      case ScanType.url: return 'Open Link';
-      case ScanType.wifi: return 'Copy Password';
-      case ScanType.contact: return 'Add Contact';
-      case ScanType.email: return 'Send Email';
-      case ScanType.phone: return 'Call Contact';
-      case ScanType.geo: return 'View Map';
-      case ScanType.upi: return 'Pay Now';
-      default: return 'Search Web';
+      case ScanType.url:
+        return 'Open Link';
+      case ScanType.wifi:
+        return 'Copy Password';
+      case ScanType.contact:
+        return 'Add Contact';
+      case ScanType.email:
+        return 'Send Email';
+      case ScanType.phone:
+        return 'Call Contact';
+      case ScanType.geo:
+        return 'View Map';
+      case ScanType.upi:
+        return 'Pay Now';
+      default:
+        return 'Search Web';
     }
   }
 
@@ -269,14 +341,23 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (data.containsKey('name')) _buildDetailItem(AppStrings.name, data['name']!, Icons.person_rounded),
-        if (data.containsKey('phone')) _buildDetailItem(AppStrings.phone, data['phone']!, Icons.phone_rounded),
-        if (data.containsKey('email')) _buildDetailItem(AppStrings.email, data['email']!, Icons.email_rounded),
-        if (data.containsKey('org')) _buildDetailItem(AppStrings.organization, data['org']!, Icons.business_rounded),
+        if (data.containsKey('name'))
+          _buildDetailItem(
+              AppStrings.name, data['name']!, Icons.person_rounded),
+        if (data.containsKey('phone'))
+          _buildDetailItem(
+              AppStrings.phone, data['phone']!, Icons.phone_rounded),
+        if (data.containsKey('email'))
+          _buildDetailItem(
+              AppStrings.email, data['email']!, Icons.email_rounded),
+        if (data.containsKey('org'))
+          _buildDetailItem(
+              AppStrings.organization, data['org']!, Icons.business_rounded),
         if (data.isEmpty)
           SelectableText(
             widget.content,
-            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: AppColors.textSecondary),
           ),
       ],
     );
@@ -293,8 +374,12 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textDimmed)),
-                SelectableText(value, style: AppTextStyles.bodyMedium.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text(label,
+                    style: AppTextStyles.labelSmall
+                        .copyWith(color: AppColors.textDimmed)),
+                SelectableText(value,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
               ],
             ),
           ),
@@ -305,7 +390,7 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
 
   Future<void> _performMainAction(ScanType type) async {
     final content = widget.content.trim();
-    Vibrate.feedback(FeedbackType.light);
+    HapticFeedback.lightImpact();
     switch (type) {
       case ScanType.url:
       case ScanType.geo:
@@ -314,26 +399,39 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
       case ScanType.upi:
         final uri = ActionUrlBuilder.buildPrimaryUri(type, content);
         if (uri != null && await canLaunchUrl(uri)) {
-          await launchUrl(
+          final launched = await launchUrl(
             uri,
-            mode: (type == ScanType.url) 
-                ? LaunchMode.platformDefault 
+            mode: (type == ScanType.url)
+                ? LaunchMode.platformDefault
                 : LaunchMode.externalApplication,
           );
+          if (!launched) {
+            await _fallbackToSearch(content);
+          }
         } else {
-          await launchUrl(ActionUrlBuilder.buildSearchUri(content));
+          await _fallbackToSearch(content);
         }
         break;
       case ScanType.wifi:
         _copyToClipboard();
         break;
       default:
-        await launchUrl(ActionUrlBuilder.buildSearchUri(content));
+        await _fallbackToSearch(content);
+    }
+  }
+
+  Future<void> _fallbackToSearch(String content) async {
+    final launched = await launchUrl(ActionUrlBuilder.buildSearchUri(content));
+    if (!launched && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Unable to open an action for this content.')),
+      );
     }
   }
 
   void _copyToClipboard() {
-    Vibrate.feedback(FeedbackType.selection);
+    HapticFeedback.selectionClick();
     Clipboard.setData(ClipboardData(text: widget.content));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Copied to clipboard')),
@@ -341,7 +439,7 @@ class _ScanResultSheetState extends ConsumerState<ScanResultSheet> {
   }
 
   void _shareContent() {
-    Vibrate.feedback(FeedbackType.selection);
+    HapticFeedback.selectionClick();
     Share.share(widget.content);
   }
 }

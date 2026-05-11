@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 
 class AdService {
   static final AdService _instance = AdService._internal();
@@ -39,7 +40,7 @@ class AdService {
           _appOpenAd = ad;
         },
         onAdFailedToLoad: (error) {
-          debugPrint('AppOpenAd failed to load: $error');
+          AppLogger.debug('AppOpenAd failed to load: $error');
         },
       ),
     );

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quickscan_pro/core/utils/content_analyzer.dart';
+import 'package:quickscan_pro/core/utils/app_logger.dart';
 
 /// A provider that manages the QR generator state.
 final generatorProvider =
@@ -84,7 +85,7 @@ class GeneratorNotifier extends StateNotifier<GeneratorState> {
         state = GeneratorState.fromJson(json.decode(jsonStr) as Map<String, dynamic>);
       }
     } catch (e) {
-      debugPrint('Error loading generator state: $e');
+      AppLogger.debug('Error loading generator state: $e');
     }
   }
 
@@ -93,7 +94,7 @@ class GeneratorNotifier extends StateNotifier<GeneratorState> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_prefKey, json.encode(state.toJson()));
     } catch (e) {
-      debugPrint('Error saving generator state: $e');
+      AppLogger.debug('Error saving generator state: $e');
     }
   }
 

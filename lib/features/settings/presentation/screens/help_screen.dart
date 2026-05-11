@@ -9,14 +9,12 @@ import 'package:quickscan_pro/core/constants/strings.dart';
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
 
-  Future<void> _launchUrl(String url) async {
+  Future<bool> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri)) {
-      throw Exception('Could not launch $url');
-    }
+    return launchUrl(uri);
   }
 
-  Future<void> _sendEmail() async {
+  Future<void> _sendEmail(BuildContext context) async {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'contact.uthakkan@gmail.com',
@@ -25,8 +23,12 @@ class HelpScreen extends StatelessWidget {
       }),
     );
 
+    final messenger = ScaffoldMessenger.of(context);
     if (!await launchUrl(emailLaunchUri)) {
-      throw Exception('Could not launch email');
+      if (!context.mounted) return;
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Unable to open your email app right now.')),
+      );
     }
   }
 
@@ -40,6 +42,7 @@ class HelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top + 16;
+    final bottomPadding = MediaQuery.of(context).padding.bottom + AppDimensions.lg;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -52,7 +55,7 @@ class HelpScreen extends StatelessWidget {
             AppDimensions.lg,
             topPadding,
             AppDimensions.lg,
-            AppDimensions.lg,
+            bottomPadding,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +128,7 @@ class HelpScreen extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        onTap: _sendEmail,
+        onTap: () => _sendEmail(context),
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -166,7 +169,7 @@ class HelpScreen extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        onTap: () => _launchUrl('https://www.uthakkan.in/contact'),
+        onTap: () => _openLink(context, 'https://www.uthakkan.in/contact'),
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -195,6 +198,17 @@ class HelpScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openLink(BuildContext context, String url) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final launched = await _launchUrl(url);
+    if (!context.mounted) return;
+    if (!launched) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Unable to open the page right now.')),
+      );
+    }
   }
 
   Widget _buildFooterSection(BuildContext context) {
